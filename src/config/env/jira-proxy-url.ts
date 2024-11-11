@@ -1,0 +1,1 @@
+export const JIRA_PROXY_URL = `${process.env.NEXT_PUBLIC_PROXY_URL}`;

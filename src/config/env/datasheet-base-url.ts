@@ -1,0 +1,1 @@
+export const DATASHEET_BASE_URL = `${process.env.NEXT_PUBLIC_DATASHEET_API}:${process.env.NEXT_PUBLIC_DATASHEET_PORT}`;
