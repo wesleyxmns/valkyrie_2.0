@@ -39,8 +39,8 @@ const BlurIn = ({
       className={cn(className, "relative overflow-hidden")}
     >
       {isImage ? (
-        <Image
-          src={content as StaticImageData}
+        <img
+          src={typeof content === "string" ? content : content.src}
           alt=""
           className="object-cover"
           width={imageWidth}

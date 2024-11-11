@@ -39,7 +39,7 @@ export function LoginScreen() {
         <CardHeader>
           <CardHeader className='flex items-center justify-center space-y-5'>
             <div className='mb-5'>
-              <Image className='w-64' src={Logo} alt='Logotipo da aplicação' />
+              <Image priority className='w-64' src={Logo} alt='Logotipo da aplicação' />
             </div>
           </CardHeader>
         </CardHeader>

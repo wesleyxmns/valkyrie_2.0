@@ -24,7 +24,7 @@ export const Navbar = () => {
       <div className="flex h-16 items-center justify-between ml-10 mr-10">
         <div className="flex items-center space-x-5">
           <Image
-            className=''
+            priority
             src={currentTheme === 'light' ? VALKYRIELOGOLIGHT : VALKYRIELOGOLDARK}
             alt="LOGOTIPO DA APLICAÇÃO"
             width={120}
