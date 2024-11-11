@@ -1,1 +1,1 @@
-export const JIRA_BASE_URL = `${process.env.NEXT_PUBLIC_JIRA_API}:${process.env.NEXT_PUBLIC_JIRA_API_PORT}`;
+export const JIRA_BASE_URL = `${process.env.NEXT_PUBLIC_BRYNHILDR_API}:${process.env.NEXT_PUBLIC_BRYNHILDR_API_PORT}`;
