@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import BackgroundImage from '../../../public/assets/images/jpeg/5026563.jpg';
+import BackgroundImage from '../../../public/assets/images/jpeg/background-route-public.jpg';
 
 const PublicLayout = ({ children }: { children: ReactNode }) => {
   return (
