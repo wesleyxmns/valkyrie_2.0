@@ -41,6 +41,7 @@
     "@react-pdf/renderer": "^4.0.0",
     "@tabler/icons-react": "^3.14.0",
     "@tanstack/react-virtual": "^3.10.8",
+    "@types/cookies": "^0.9.0",
     "@types/date-fns": "^2.6.0",
     "@types/echarts": "^4.9.22",
     "@types/jsdom": "^21.1.7",
