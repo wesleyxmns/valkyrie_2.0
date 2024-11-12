@@ -5,6 +5,7 @@ import { twMerge } from 'tailwind-merge'
 import '../app/styles/globals.css'
 import { AuthProvider } from '@/providers/auth/auth-provider'
 import ThemeProvider from '@/providers/theme/theme-provider'
+import { TooltipProvider } from '@/components/ui/tooltip'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -27,8 +28,10 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
-            <main>{children}</main>
-            <Toaster richColors />
+            <TooltipProvider>
+              <main>{children}</main>
+              <Toaster richColors />
+            </TooltipProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
