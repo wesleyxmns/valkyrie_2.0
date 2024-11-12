@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect } from "react";
 import { parseCookies } from "nookies";
 import { ROUTES_VARIABLES } from "@/config/constants/route-variables";
-import ResetPasswordForm from "@/components/features/auth/reset-password-form";
+import ResetPasswordForm from "@/components/modules/auth/reset-password-form";
 
 export default function ResetPassword() {
 
