@@ -1,5 +1,4 @@
 'use client'
-// import { NotificationList } from '@/components/_components/notification-list'
 import { ROUTES_VARIABLES } from '@/config/constants/route-variables'
 import Image from 'next/image'
 import VALKYRIELOGOLIGHT from '../../../public/svg/logo-valkyrie-light.svg'
@@ -7,7 +6,7 @@ import VALKYRIELOGOLDARK from '../../../public/svg/valkyrie-logo-dark.svg'
 import { NavLink } from './nav-link'
 import { useTheme } from 'next-themes'
 import { ChooseTheme } from './choose-theme'
-import { Profile } from '../features/auth/profile'
+import { Profile } from '../modules/auth/profile'
 
 export const Navbar = () => {
   const { theme, systemTheme } = useTheme()
@@ -38,7 +37,6 @@ export const Navbar = () => {
           </nav>
         </div>
         <div className="flex items-center space-x-1">
-          {/* <NotificationList /> */}
           <ChooseTheme />
           <Profile />
         </div>

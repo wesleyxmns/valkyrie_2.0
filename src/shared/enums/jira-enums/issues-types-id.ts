@@ -1,0 +1,11 @@
+export enum IssueTypesId {
+  EPIC = '10000',
+  STORY = '10001',
+  TASK = '10002',
+  SUBTASK = '10003',
+  BUG = '10004',
+  ANALISE_DE_CAUSA = '10901',
+  IMEDIATA = '10800',
+  CORRETIVA = '10801',
+  MELHORIA = '10802',
+}
