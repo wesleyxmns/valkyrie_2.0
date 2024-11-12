@@ -1,0 +1,480 @@
+export enum JiraCustomFields {
+  CLIENTE = "SB_Cliente",
+  PRODUTO = "SB_Cód. Produto",
+  DESCRICAO = "SB_Descrição",
+  ITEM_PROPOSTA = "SB_Item Proposta",
+  OP = "SB_OP",
+  PEDIDO = "SB_Pedido",
+  STATUS_OP = "SB_Status OP",
+  EMISSAO = "SB_Emissão",
+  DEF_COMERCIAL = "SB_Definicao Comercial",
+  PREV_ENTREGA_COMERCIAL = "SB_Prev Entrega Comercial",
+  PREV_DEF_TEC_DTD = "SB_Prev Def Tec DTD",
+  PREV_DEF_TEC_DTI = "SB_Prev Def Tec DTI",
+  PREV_DEF_TEC_DTM = "SB_Prev Def Tec DTM",
+  DEF_TEC_DTD = "SB_Def Tec DTD",
+  DEF_TEC_DTI = "SB_Def Tec DTI",
+  DEF_TEC_DTM = "SB_Def Tec DTM",
+  REPOSICAO = "SB_Reposição",
+  ITEM_PEDIDO = "SB_Item Pedido",
+  CHAVE_JIRA = "SB_Chave Jira",
+  QUANTIDADE = "SB_Qtd. Item",
+  TIPO_ITEM = "SB_Tipo de Item",
+  COD_CLIENTE = "SB_CodCliente",
+  SETOR_EMITENTE = "SB_Setor Emitente",
+  SETOR_ORIGEM = "SB_Setor Origem",
+  ITEM_RNC = "SB_ItemRNC",
+  COMPONENTE = "SB_Componente",
+  IDENTIFICADO_EM = "SB_Identificado em",
+  COD_RELATORIO = "Código do Relatório",
+  TIPO_RELATORIO = "Tipo de Relatório",
+  FORNECEDOR = "Fornecedor",
+}
+
+export const CustomFields = {
+  APROVADA_POR: {
+    id: "customfield_11800",
+    name: "Aprovada por",
+    type: "User Picker (single user)"
+  },
+  ACOES_CORRETIVAS_EVITAM_OCORRENCIAS: {
+    id: "customfield_11506",
+    name: "As ações corretivas evitam novas ocorrências",
+    type: "Radio Buttons",
+  },
+  ACOES_BLOQUEIO_EFICAZES: {
+    id: "customfield_11505",
+    name: "As ações de bloqueio foram eficazes",
+    type: "Radio Buttons",
+  },
+  ATT_RISCOS_OPORTUNIDADES: {
+    id: "customfield_11502",
+    name: "Atualizar ricos e oportunidade",
+    type: "Radio Buttons",
+  },
+  BASELINE_END_DATE: {
+    id: "customfield_10303",
+    name: "Baseline end date",
+    type: "Date Picker",
+  },
+  BASELINE_START_DATE: {
+    id: "customfield_10302",
+    name: "Baseline start date",
+    type: "Date Picker",
+  },
+  CHECKLISTS: {
+    id: "customfield_10318",
+    name: "Checklists",
+    type: "Text Field (multi-line)",
+  },
+  CONSEQUENCIAS_GERADAS: {
+    id: "customfield_11501",
+    name: "Consequências geradas",
+    type: "Text Field (single line)",
+  },
+  COD_RELATORIO: {
+    id: "customfield_11301",
+    name: "Código do Relatório",
+    type: "Text Field (single line)",
+  },
+  COD_QTD: {
+    id: "customfield_12201",
+    name: "Código e Quantidade",
+    type: "Text Field (multi-line)",
+  },
+  DEVELOPMENT: {
+    id: "customfield_10000",
+    name: "Development",
+    type: "Development Summary",
+  },
+  END_DATE: {
+    id: "customfield_10301",
+    name: "End date",
+    type: "Date Picker",
+  },
+  EPIC_COLOR: {
+    id: "customfield_10103",
+    name: "Epic Color",
+    type: "Colour of Epic",
+  },
+  EPIC_LINK: {
+    id: "customfield_10100",
+    name: "Epic Link",
+    type: "Epic Link Relationship",
+  },
+  EPIC_NAME: {
+    id: "customfield_10102",
+    name: "Epic Name",
+    type: "Name of Epic",
+  },
+  EPIC_STATUS: {
+    id: "customfield_10101",
+    name: "Epic Status",
+    type: "Status of Epic",
+  },
+  CHECKBOXES: {
+    id: "customfield_10107",
+    name: "Flagged",
+    type: "Checkboxes",
+  },
+  FORM_ENTRADA: {
+    id: "customfield_12301",
+    name: "Forma de Entrada",
+    type: "Select List (single choice)",
+  },
+  FORNECEDOR: {
+    id: "customfield_11802",
+    name: "Fornecedor",
+    type: "Text Field (single line)",
+  },
+  IDENTIFICADO_EM: {
+    id: "customfield_11302",
+    name: "Identificado em",
+    type: "Text Field (single line)",
+  },
+  ITEM_NORMA: {
+    id: "customfield_12002",
+    name: "Item da norma",
+    type: "Select List (single choice)",
+  },
+  MELHORIA_IMPL: {
+    id: "customfield_12101",
+    name: "Melhoria implanda",
+    type: "Radio Buttons",
+  },
+  MAQUINA: {
+    id: "customfield_12205",
+    name: "Máquina",
+    type: "Text Field (multi-line)",
+  },
+  NC_SIMILARES_PODEM_OCORRER: {
+    id: "customfield_11504",
+    name: "NC's similares ou podem ocorrer",
+    type: "Radio Buttons",
+  },
+  ORIGINAL_STORY_POINTS: {
+    id: "customfield_11104",
+    name: "Original story points",
+    type: "Original story points",
+  },
+  PARENT_LINK: {
+    id: "customfield_11101",
+    name: "Parent Link",
+    type: "Parent Link",
+  },
+  PROGRAM_INCREMENT: {
+    id: "customfield_10403",
+    name: "Program Increment",
+    type: "Text Field (single line)",
+  },
+  RANK: {
+    id: "customfield_10105",
+    name: "Rank",
+    type: "Global Rank",
+  },
+  REALIZAR_MUDANCA_SGQ: {
+    id: "customfield_11503",
+    name: "Realizar mudanças no SQG",
+    type: "Radio Buttons",
+  },
+  RESPONSAVEIS: {
+    id: "customfield_12302",
+    name: "Responsáveis",
+    type: "User Picker (multiple users)",
+  },
+  RESULT_ESPERADO_ATENDIDO: {
+    id: "customfield_12102",
+    name: "Resultado esperado foi atendido",
+    type: "Radio Buttons",
+  },
+  REUNIAO_ABERTURA: {
+    id: "customfield_11701",
+    name: "Reunião de abertura do pedido",
+    type: "Text Field (single line)",
+  },
+  RISK_CONSEQUENCE: {
+    id: "customfield_10307",
+    name: "Risk consequence",
+    type: "Select List (single choice)",
+  },
+  RISK_PROPABILITY: {
+    id: "customfield_10306",
+    name: "Risk probability",
+    type: "Select List (single choice)",
+  },
+  QTD_ITEM: {
+    id: "customfield_11001",
+    name: "SB_ Qtd. Item",
+    type: "Text Field (single line)",
+  },
+  ACOES_BLOQUEIO: {
+    id: "customfield_11607",
+    name: "SB_Ações Bloqueio",
+    type: "Smart Checklist Custom Field",
+  },
+  CHAVE_JIRA: {
+    id: "customfield_11000",
+    name: "SB_Chave Jira",
+    type: "Text Field (single line)",
+  },
+  CLIENTE: {
+    id: "customfield_10309",
+    name: "SB_Cliente",
+    type: "Text Field (single line)",
+  },
+  COD_CLIENTE: {
+    id: "customfield_11200",
+    name: "SB_CodCliente",
+    type: "Text Field (single line)",
+  },
+  COMPONENTE: {
+    id: "customfield_11801",
+    name: "SB_Componente",
+    type: "Text Field (single line)",
+  },
+  CONCLUSAO_PREVISTA: {
+    id: "customfield_10903",
+    name: "SB_Conclusao Prevista",
+    type: "Text Field (single line)",
+  },
+  COD_PRODUTO: {
+    id: "customfield_10800",
+    name: "SB_Cód. Produto",
+    type: "Text Field (single line)",
+  },
+  COD_ACOMPANHAMENTO: {
+    id: "customfield_11603",
+    name: "SB_Código Acompanhamento",
+    type: "Text Field (single line)",
+  },
+  DATA_CONCLUSAO_OP: {
+    id: "customfield_10915",
+    name: "SB_Data Conclusao OP",
+    type: "Text Field (single line)",
+  },
+  DEF_TEC_DTD: {
+    id: "customfield_10909",
+    name: "SB_Def Tec DTD",
+    type: "Text Field (single line)",
+  },
+  DEF_TEC_DTI: {
+    id: "customfield_10908",
+    name: "SB_Def Tec DTI",
+    type: "Text Field (single line)",
+  },
+  DEF_TEC_DTM: {
+    id: "customfield_10910",
+    name: "SB_Def Tec DTM",
+    type: "Text Field (single line)",
+  },
+  DEF_COMERCIAL: {
+    id: "customfield_10902",
+    name: "SB_Definicao Comercial",
+    type: "Text Field (single line)",
+  },
+  DESCRICAO: {
+    id: "customfield_10600",
+    name: "SB_Descrição",
+    type: "Text Field (single line)",
+  },
+  DISPOSICAO: {
+    id: "customfield_11600",
+    name: "SB_Disposição",
+    type: "Text Field (single line)",
+  },
+  EMISSAO: {
+    id: "customfield_10900",
+    name: "SB_Emissao",
+    type: "Text Field (single line)",
+  },
+  ENVIA_MATERIAL_CLIENTE: {
+    id: "customfield_11601",
+    name: "SB_Envia Material Cliente",
+    type: "Select List (single choice)",
+  },
+  FAMILIA_MAQUINA: {
+    id: "customfield_10313",
+    name: "SB_Família da Máquina",
+    type: "Select List (single choice)",
+  },
+  ITEM_PEDIDO: {
+    id: "customfield_10913",
+    name: "SB_Item Pedido",
+    type: "Text Field (single line)",
+  },
+  ITEM_PROPOSTA: {
+    id: "customfield_10315",
+    name: "SB_Item Proposta",
+    type: "Text Field (single line)",
+  },
+  ITEM_RNC: {
+    id: "customfield_11306",
+    name: "SB_ItemRNC",
+    type: "Text Field (single line)",
+  },
+  OP: {
+    id: "customfield_10700",
+    name: "SB_OP",
+    type: "Text Field (single line)",
+  },
+  PEDIDO: {
+    id: "customfield_10308",
+    name: "SB_Pedido",
+    type: "Text Field (single line)",
+  },
+  PRAZO: {
+    id: "customfield_11605",
+    name: "SB_Prazo",
+    type: "Date Picker",
+  },
+  PREV_DEF_TEC_DTD: {
+    id: "customfield_10906",
+    name: "SB_Prev Def Tec DTD",
+    type: "Text Field (single line)",
+  },
+  PREV_DEF_TEC_DTI: {
+    id: "customfield_10905",
+    name: "SB_Prev Def Tec DTI",
+    type: "Text Field (single line)",
+  },
+  PREV_DEF_TEC_DTM: {
+    id: "customfield_10907",
+    name: "SB_Prev Def Tec DTM",
+    type: "Text Field (single line)",
+  },
+  PREV_ENTREGA_COMERCIAL: {
+    id: "customfield_10904",
+    name: "SB_Prev Entrega Comercial",
+    type: "Text Field (single line)",
+  },
+  QTD_ACOMPANHAMENTO: {
+    id: "customfield_11604",
+    name: "SB_Quantidade Acompanhamento",
+    type: "Text Field (single line)",
+  },
+  FT_REV: {
+    id: "customfield_11400",
+    name: "SB_REV",
+    type: "Text Field (single line)",
+  },
+  COD_RNC: {
+    id: "customfield_11300",
+    name: "SB_RNC",
+    type: "Text Field (single line)",
+  },
+  REG_PED_GARANTIA: {
+    id: "customfield_11602",
+    name: "SB_Registrar Pedido em Garantia",
+    type: "Select List (single choice)",
+  },
+  REPOSICAO: {
+    id: "customfield_10911",
+    name: "SB_Reposicao",
+    type: "Text Field (single line)",
+  },
+  SETOR_EMITENTE: {
+    id: "customfield_11304",
+    name: "SB_Setor Emitente",
+    type: "Text Field (single line)",
+  },
+  SETOR_ORIGEM: {
+    id: "customfield_11303",
+    name: "SB_Setor Origem",
+    type: "Text Field (single line)",
+  },
+  STATUS_OP: {
+    "id": "customfield_10914",
+    "name": "SB_Status OP",
+    "type": "Text Field (single line)",
+  },
+  TIPO_ITEM: {
+    id: "customfield_11002",
+    name: "SB_Tipo de Item",
+    type: "Text Field (single line)",
+  },
+  SMART_CHECKLIST: {
+    id: "customfield_10317",
+    name: "Smart Checklist",
+    type: "Smart Checklist Custom Field",
+  },
+  SMART_CHECKLIST_PROGRESS: {
+    id: "customfield_10202",
+    name: "Smart Checklist Progress",
+    type: "Text Field (single line)",
+  },
+  SPRINT: {
+    id: "customfield_10104",
+    name: "Sprint",
+    type: "Jira Sprint Field",
+  },
+  START_DATE: {
+    id: "customfield_10300",
+    name: "Start date",
+    type: "Date Picker",
+  },
+  STORY_POINTS: {
+    id: "customfield_10106",
+    name: "Story Points",
+    type: "Number Field",
+  },
+  SUBSETOR_FABRICA: {
+    id: "customfield_12304",
+    name: "Subsetor da Fabrica",
+    type: "Select List (single choice)",
+  },
+  TES_COD: {
+    id: "customfield_12000",
+    name: "TES - Cod",
+    type: "Text Field (single line)",
+  },
+  TES_DESC: {
+    id: "customfield_12001",
+    name: "TES - Descricao",
+    type: "Text Field (single line)",
+  },
+  TARGET_END: {
+    id: "customfield_11103",
+    name: "Target end",
+    type: "Target end",
+  },
+  TARGET_START: {
+    id: "customfield_11102",
+    name: "Target start",
+    type: "Target start",
+  },
+  TASK_MODE: {
+    id: "customfield_10304",
+    name: "Task mode",
+    type: "Select List (single choice)",
+  },
+  TASK_PROGRESS: {
+    id: "customfield_10305",
+    name: "Task progress",
+    type: "Number Field",
+  },
+  TEAM: {
+    id: "customfield_11100",
+    name: "Team",
+    type: "Team",
+  },
+  TIPO_RELATORIO: {
+    id: "customfield_12100",
+    name: "Tipo de Relatório",
+    type: "Select List (single choice)",
+  },
+  TIPO_FRETE: {
+    id: "customfield_12200",
+    name: "Tipo de frete",
+    type: "Text Field (single line)",
+  },
+  ISSUE_FUNCTION: {
+    id: "customfield_10316",
+    name: "issueFunction",
+    type: "JQL Functions Customfield Type",
+  },
+  IDEALIZADORES: {
+    id: "customfield_12500",
+    name: "Idealizadores",
+    type: "Text Field (single line)",
+  },
+}
