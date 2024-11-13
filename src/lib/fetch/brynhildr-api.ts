@@ -1,4 +1,4 @@
-import { BRYNHILDR_BASE_URL } from "@/config/env/jira-base-url";
+import { BRYNHILDR_BASE_URL } from "@/config/env/brynhildr-base-url";
 
 export async function brynhildrAPI(path: string, init?: RequestInit): Promise<Response> {
   const apiPrefix = "/v1/jira";
