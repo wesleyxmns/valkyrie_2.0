@@ -2,7 +2,7 @@
 import CardBoardList from "@/components/common/build-card-list"
 import { UserDTO } from "@/dtos/responses/user-dto"
 import { useAuth } from "@/hooks/auth/use-auth"
-import WFTQIMAGEPREVIEW from '../../../../../public/assets/images/previews/wftq-dashboard-preview.png'
+import WFTQIMAGEPREVIEW from '../../../../public/assets/images/previews/wftq-dashboard-preview.png'
 
 export function DashboardCards() {
   const { user } = useAuth()
