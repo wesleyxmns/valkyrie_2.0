@@ -7,7 +7,7 @@ import { CauseAnalysisProvider } from "./providers/cause-analysis/cause-analysis
 import { CommentsProvider } from "./providers/comments/comments-provider";
 import { NotificationProvider } from "./providers/notifications/notifications-provider";
 
-export function DashboardProviders({ children }: { children: ReactNode }) {
+export default function DashboardProviders({ children }: { children: ReactNode }) {
   return (
     <SocketProvider>
       <KabanProvider>
@@ -16,7 +16,9 @@ export function DashboardProviders({ children }: { children: ReactNode }) {
             <CauseAnalysisProvider>
               <CommentsProvider>
                 <NotificationProvider>
-                  {children}
+                  <div className="bg-green-3 w-screen h-screen">
+                    {children}
+                  </div>
                 </NotificationProvider>
               </CommentsProvider>
             </CauseAnalysisProvider>
