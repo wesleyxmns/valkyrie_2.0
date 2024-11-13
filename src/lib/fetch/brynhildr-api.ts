@@ -1,8 +1,8 @@
-import { JIRA_BASE_URL } from "@/config/env/jira-base-url";
+import { BRYNHILDR_BASE_URL } from "@/config/env/jira-base-url";
 
-export async function jiraAPI(path: string, init?: RequestInit): Promise<Response> {
+export async function brynhildrAPI(path: string, init?: RequestInit): Promise<Response> {
   const apiPrefix = "/v1/jira";
-  const url = new URL(apiPrefix.concat(path), JIRA_BASE_URL);
+  const url = new URL(apiPrefix.concat(path), BRYNHILDR_BASE_URL);
 
   try {
     const response = await fetch(url.toString(), init);

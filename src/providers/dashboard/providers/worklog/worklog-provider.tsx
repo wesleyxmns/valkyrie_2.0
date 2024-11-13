@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Textarea } from "@/components/ui/textarea";
 import { WorklogContext } from "@/contexts/worklog/worklog-context";
 import { HttpStatus } from "@/lib/fetch/constants/http-status";
-import { jiraAPI } from "@/lib/fetch/jira-api";
+import { brynhildrAPI } from "@/lib/fetch/brynhildr-api";
 import { avoidDefaultDomBehavior } from "@/shared/functions/avoidDefaultDomBehavior";
 import { CirclePlay, Pause } from "lucide-react";
 import { parseCookies } from "nookies";
@@ -124,7 +124,7 @@ export const WorklogProvider = ({ children }) => {
         started: date,
         timeSpentSeconds: Math.floor(Math.abs(timeSpent)),
       }
-      const res = await jiraAPI(`/worklogs/${issueKey}`, {
+      const res = await brynhildrAPI(`/worklogs/${issueKey}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
