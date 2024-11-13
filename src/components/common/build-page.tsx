@@ -31,9 +31,9 @@ export function BuildPage({ children, title, icon, description, className }: Bui
               text={description ?? ''}
             />
           </div>
-            <div className="flex justify-start mt-60">
+          <div className="flex justify-start">
             {children}
-            </div>
+          </div>
         </div>
       </main>
     </div>

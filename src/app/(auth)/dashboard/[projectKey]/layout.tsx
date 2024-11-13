@@ -1,11 +1,11 @@
-import { DashboardProviders } from "@/providers/dashboard"
+import DashboardProviders from "@/providers/dashboard"
 
 const DashboardLayout = ({ children }) => {
-  <DashboardProviders>
-    <div className="p-5">
+  return (
+    <DashboardProviders>
       {children}
-    </div>
-  </DashboardProviders>
+    </DashboardProviders>
+  )
 }
 
 export default DashboardLayout;
