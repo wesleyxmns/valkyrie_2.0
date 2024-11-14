@@ -28,3 +28,15 @@ export function extractStatusesFromJQL(jql: string): string[] {
 
   return Array.from(new Set(statuses));
 }
+
+export const generateUniqueColor = (() => {
+  const usedColors = new Set();
+  return () => {
+    let color;
+    do {
+      color = `rgb(${Math.floor(Math.random() * 256)},${Math.floor(Math.random() * 256)},${Math.floor(Math.random() * 256)})`;
+    } while (usedColors.has(color));
+    usedColors.add(color);
+    return color;
+  };
+})();
