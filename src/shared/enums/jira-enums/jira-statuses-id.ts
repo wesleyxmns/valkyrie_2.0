@@ -1,0 +1,15 @@
+export enum JiraStatusesId {
+  BACKLOG = '10000',
+  TO_DO = "10009",
+  EM_ANALISE = "10004",
+  VALIDA = "10501",
+  INVALIDA = "10500",
+  IN_PROGRESS = "3",
+  DONE = "10002",
+  CANCELLED = "10007",
+  AGUARDANDO_APROVACAO = "10100",
+  APROVADA = '10711',
+  UNDER_REVIEW = "10005",
+  PCP = "10801",
+  SAC = '10802'
+}

@@ -5,11 +5,11 @@ import AuthRouteBackground from '../../../public/assets/images/jpeg/background-r
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div
-      className="relative w-screen h-screen flex bg-cover bg-center"
+      className="w-screen h-screen flex bg-cover bg-center"
       style={{ backgroundImage: `url(${AuthRouteBackground.src})` }}
     >
       <Navbar />
-      <div className="p-5">
+      <div className="p-5 w-full h-full relative">
         {children}
       </div>
     </div>

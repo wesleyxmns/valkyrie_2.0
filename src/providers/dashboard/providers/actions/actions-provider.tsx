@@ -1,9 +1,11 @@
 'use client'
 import { ActionsContext } from "@/contexts/actions/actions-context";
-import { jiraAPI } from "@/lib/fetch/jira-api";
+import { brynhildrAPI } from "@/lib/fetch/brynhildr-api";
 import { buildJiraAuthorization } from "@/shared/builds/build-jira-authorization";
 import { CustomFields } from "@/shared/constants/jira/jira-custom-fields";
-import { Action, ActionsProviderProps, EffectivenessAnalysis, FollowUp } from "@/shared/interfaces/actions";
+import { Action, ActionsProviderProps } from "@/shared/interfaces/actions";
+import { EffectivenessAnalysis } from "@/shared/types/effectiveness-analysis";
+import { FollowUp } from "@/shared/types/follow-up";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -45,7 +47,7 @@ export function ActionsProvider({ children }: ActionsProviderProps) {
   }
 
   const getActionInformation = async (issueKey: string) => {
-    const response = await jiraAPI(`/issue/${issueKey}`, {
+    const response = await brynhildrAPI(`/issue/${issueKey}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'Authorization': buildJiraAuthorization() }
     })
