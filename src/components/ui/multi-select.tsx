@@ -228,7 +228,7 @@ const MultiSelect = React.forwardRef<
               <CommandEmpty>No results found.</CommandEmpty>
               <CommandGroup>
                 {options
-                  .filter((option) =>
+                  ?.filter((option) =>
                     option.label.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     option.value.toLowerCase().includes(searchTerm.toLowerCase())
                   )
