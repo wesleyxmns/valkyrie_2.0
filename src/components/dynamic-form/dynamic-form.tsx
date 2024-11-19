@@ -1,3 +1,4 @@
+'use client'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ScrollBar } from "@/components/ui/scroll-area";
 import { CustomFields } from "@/shared/constants/jira/jira-custom-fields";
