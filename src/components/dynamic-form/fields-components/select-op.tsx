@@ -1,47 +1,58 @@
 'use client'
-import { Fragment, useEffect, useRef, useState } from "react";
-import { Controller } from "react-hook-form";
-import { toast } from "sonner";
-import MultiSelect from "@/components/ui/multi-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import MultiSelect from "@/components/ui/multi-select";
 import { Switch } from "@/components/ui/switch";
+import { useBrynhildrData } from "@/hooks/brynhildr-data/brynhildr-data";
 import { CustomFields } from "@/shared/constants/jira/jira-custom-fields";
 import { SelectControllerProps } from "@/shared/interfaces/dynamic-form";
-import { useGetOpsForClients } from "../services/use-dynamic-form-queries";
+import { Fragment, useEffect, useState } from "react";
+import { Controller } from "react-hook-form";
+import { toast } from "sonner";
 
 export function SelectOP({ form, name, disabled, value }: SelectControllerProps) {
-    const hasFetched = useRef(false);
-    const [opList, setOpList] = useState<any>([]);
     const [isCheckboxChecked, setIsCheckboxChecked] = useState(true);
-    const [selectDisabled, setSelectDisabled] = useState<boolean>(true);
     const [inputValue, setInputValue] = useState(value || "");
 
     const clients: string = form.watch(CustomFields.CLIENTE.id);
 
-    function getOpByClient() {
+    const { useGetOpsForClients } = useBrynhildrData();
+    const {
+        data: opList = [],
+        isLoading,
+        isError,
+    } = useGetOpsForClients(clients);
+
+    useEffect(() => {
+        if (value) {
+            form.setValue(CustomFields.OP.id, value);
+            setInputValue(value);
+        }
+    }, [value, form]);
+
+    useEffect(() => {
         if (clients?.length > 0) {
-            setSelectDisabled(true);
-            const loadingToastId = toast.loading(`Buscando Ordens de Produção...`);
-            try {
-                const { data: result } = useGetOpsForClients(clients);
-                setOpList(result);
-                toast.success('Tudo pronto', {
-                    id: loadingToastId,
+            const toastId = 'ops-loading';
+
+            if (isLoading) {
+                toast.loading('Buscando Ordens de Produção...', {
+                    id: toastId,
                 });
-                setSelectDisabled(false);
-            } catch (error) {
-                toast.error('Erro ao buscar as ordens de produção', {
-                    id: loadingToastId,
+            } else if (isError) {
+                toast.error(`Erro ao buscar as ordens de produção`, {
+                    id: toastId,
                 });
-                setSelectDisabled(false);
+            } else {
+                toast.success('Ordens de produção carregadas', {
+                    id: toastId,
+                });
             }
         }
-    }
+    }, [clients, isLoading, isError]);
 
-    const handleCheckboxChange = (event: boolean) => {
-        setIsCheckboxChecked(event);
-        if (!event) {
+    const handleCheckboxChange = (checked: boolean) => {
+        setIsCheckboxChecked(checked);
+        if (!checked) {
             form.setValue(CustomFields.OP.id, inputValue);
         } else {
             form.setValue(CustomFields.OP.id, value || "");
@@ -61,24 +72,6 @@ export function SelectOP({ form, name, disabled, value }: SelectControllerProps)
         form.trigger(CustomFields.OP.id);
     };
 
-    useEffect(() => {
-        if (!hasFetched.current && clients?.length > 0) {
-            hasFetched.current = true;
-            setSelectDisabled(false);
-            getOpByClient();
-        } else if (clients?.length === 0) {
-            setOpList([]);
-            setSelectDisabled(true);
-        }
-    }, [clients]);
-
-    useEffect(() => {
-        if (value) {
-            form.setValue(CustomFields.OP.id, value);
-            setInputValue(value);
-        }
-    }, [value, form]);
-
     return (
         <Fragment>
             <div className="flex flex-row items-center gap-2">
@@ -97,7 +90,7 @@ export function SelectOP({ form, name, disabled, value }: SelectControllerProps)
                                     }}
                                     placeholder={"Selecione"}
                                     variant="secondary"
-                                    disabled={selectDisabled || disabled}
+                                    disabled={isLoading || disabled}
                                     style={{
                                         whiteSpace: 'nowrap',
                                         overflow: 'hidden',

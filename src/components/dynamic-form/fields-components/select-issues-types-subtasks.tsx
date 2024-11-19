@@ -1,11 +1,11 @@
 'use client'
-import Image from "next/image";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useBrynhildrData } from "@/hooks/brynhildr-data/brynhildr-data";
+import { SelectControllerProps } from "@/shared/interfaces/dynamic-form";
+import Image from "next/image";
+import { useEffect } from "react";
 import { Controller } from "react-hook-form";
 import { IssueTypeProps } from "./select-type-task";
-import { useEffect, useState } from "react";
-import { SelectControllerProps } from "@/shared/interfaces/dynamic-form";
-import { useGetIssueTypes } from "../services/use-dynamic-form-queries";
 
 interface SelectSubtaskProps extends SelectControllerProps {
     projectKey: string;
@@ -15,30 +15,18 @@ interface SelectSubtaskProps extends SelectControllerProps {
 }
 
 export function SelectIssueTypeSubtask({ form, name, projectKey, disabled, value, showIds, defaultValue }: SelectSubtaskProps) {
-    const [issuesTypesSubtasks, setIssuesTypesSubtasks] = useState<IssueTypeProps[]>([]);
-
-    function subtasksTypesByProject() {
-        try {
-            const { data: result } = useGetIssueTypes(projectKey);
-            const issuesTypesSubtasks = result.filter((item: Record<string, any>) => item.subtask === true);
-            setIssuesTypesSubtasks(issuesTypesSubtasks);
-        } catch (error) {
-            console.error("Error fetching issue types:", error);
-        }
-    }
-
-    useEffect(() => {
-        subtasksTypesByProject();
-    }, [projectKey]);
+    const { useGetIssueTypes } = useBrynhildrData();
+    const { data: actionsTypes } = useGetIssueTypes(projectKey);
+    const issuesTypesSubtasks = actionsTypes.filter((item: Record<string, any>) => item.subtask === true);
 
     useEffect(() => {
         if (value) {
-            const selectedOption = issuesTypesSubtasks.find(option => option.name === value);
+            const selectedOption = actionsTypes.find(option => option.name === value);
             if (selectedOption) {
                 form.setValue(name, selectedOption.id);
             }
         }
-    }, [value, form, name, issuesTypesSubtasks]);
+    }, [value, form, name, actionsTypes]);
 
     const filteredIssuesTypes = issuesTypesSubtasks.filter(option => showIds?.includes(option.id));
 

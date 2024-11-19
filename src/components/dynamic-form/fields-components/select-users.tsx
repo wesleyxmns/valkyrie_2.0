@@ -2,12 +2,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useBrynhildrData } from "@/hooks/brynhildr-data/brynhildr-data";
 import { generateUniqueColor } from "@/lib/utils/utils";
+import { getInitials } from "@/shared/functions/get-initials";
 import { SelectControllerProps } from "@/shared/interfaces/dynamic-form";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Controller } from "react-hook-form";
-import { useGetListAllUsers } from "../services/use-dynamic-form-queries";
-import { getInitials } from "@/shared/functions/get-initials";
 
 interface User {
     value: string;
@@ -24,20 +24,20 @@ interface SelectUsersProps extends SelectControllerProps {
 
 export function SelectUsers({ form, name, value, defaultValue, id, label, disabled, showComponent = true }: SelectUsersProps) {
     const [data, setData] = useState<User[]>([]);
-    const [loading, setLoading] = useState(true);
+
+    const { useGetListAllUsers } = useBrynhildrData()
+    const { data: allUsers } = useGetListAllUsers();
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const { data: allUsers } = useGetListAllUsers();
-                setData(allUsers);
+                if (allUsers) {
+                    setData(allUsers);
+                }
             } catch (error) {
                 console.error("Failed to fetch users:", error);
-            } finally {
-                setLoading(false);
             }
         };
-
         fetchUsers();
     }, []);
 

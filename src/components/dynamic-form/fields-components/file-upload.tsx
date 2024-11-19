@@ -5,13 +5,13 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { DropzoneOptions } from "react-dropzone";
 import { Controller } from "react-hook-form";
-import ImageAudio from '../../../../../public/images/audio.png';
-import ImageDWG from '../../../../../public/images/dwg.png';
-import ImageEmail from '../../../../../public/images/email.png';
-import ImagePDF from '../../../../../public/images/pdf.png';
-import ImageSTL from '../../../../../public/images/stl.png';
-import ImageVideo from '../../../../../public/images/video.png';
-import ImageZIP from '../../../../../public/images/zip.png';
+import ImageAudio from '../../../../public/assets/images/png/audio.png';
+import ImageDWG from '../../../../public/assets/images/png/dwg.png';
+import ImageEmail from '../../../../public/assets/images/png/email.png';
+import ImagePDF from '../../../../public/assets/images/png/pdf.png';
+import ImageSTL from '../../../../public/assets/images/png/stl.png';
+import ImageVideo from '../../../../public/assets/images/png/video.png';
+import ImageZIP from '../../../../public/assets/images/png/zip.png';
 import { SelectControllerProps } from "@/shared/interfaces/dynamic-form";
 
 export function FileUpload({ form, name, disabled }: SelectControllerProps) {
