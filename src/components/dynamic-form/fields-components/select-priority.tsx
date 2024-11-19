@@ -6,13 +6,19 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue
-} from "@/components/ui/select";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { Controller } from "react-hook-form";
-import { SelectControllerProps } from "@/shared/interfaces/dynamic-form";
-import { Priority } from "@/shared/enums/jira-enums/priority";
-import { useGetListPriorities } from "../services/use-dynamic-form-queries";
+} from "@/components/ui/select"
+import { useBrynhildrData } from "@/hooks/brynhildr-data/brynhildr-data"
+import { Priority } from "@/shared/enums/jira-enums/priority"
+import { SelectControllerProps } from "@/shared/interfaces/dynamic-form"
+import Image from 'next/image'
+import { useEffect } from "react"
+import { Controller } from "react-hook-form"
+import HIGHICON from '../../../../public/svg/priorities/high.svg'
+import HIGHESTICON from '../../../../public/svg/priorities/highest.svg'
+import LOWICON from '../../../../public/svg/priorities/low.svg'
+import LOWESTICON from '../../../../public/svg/priorities/lowest.svg'
+import MEDIUMICON from '../../../../public/svg/priorities/medium.svg'
+
 
 interface PriorityItem {
     id: string;
@@ -23,16 +29,8 @@ interface PriorityItem {
 
 export function SelectPriority({ name, form, disabled, value }: SelectControllerProps) {
 
-    const [priorities, setPriorities] = useState<PriorityItem[]>([]);
-
-    function getPriorities() {
-        const { data: priorities } = useGetListPriorities();
-        setPriorities(priorities);
-    }
-
-    useEffect(() => {
-        getPriorities();
-    }, []);
+    const { useGetListPriorities } = useBrynhildrData()
+    const { data: priorities } = useGetListPriorities();
 
     useEffect(() => {
         if (value) {
@@ -42,6 +40,14 @@ export function SelectPriority({ name, form, disabled, value }: SelectController
             }
         }
     }, [value, priorities, name, form]);
+
+    const priorityIcons = {
+        [Priority.LOWEST]: LOWESTICON,
+        [Priority.LOW]: LOWICON,
+        [Priority.MEDIUM]: MEDIUMICON,
+        [Priority.HIGH]: HIGHICON,
+        [Priority.HIGHEST]: HIGHESTICON,
+    }
 
     return (
         <Controller
@@ -62,23 +68,17 @@ export function SelectPriority({ name, form, disabled, value }: SelectController
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            {priorities.map((p, idx) => (
-                                <SelectItem key={idx} value={p.value}>
-                                    <div className="flex items-center gap-1">
-                                        {p.iconUrl && (
-                                            <Image
-                                                unoptimized
-                                                priority
-                                                src={p.iconUrl}
-                                                width={15}
-                                                height={15}
-                                                alt="prioridades"
-                                            />
-                                        )}
-                                        {p.label}
-                                    </div>
-                                </SelectItem>
-                            ))}
+                            {priorities?.map((p: PriorityItem, idx) => {
+                                const label = p.label;
+                                return (
+                                    <SelectItem key={idx} value={p.value}>
+                                        <div className="flex items-center gap-1">
+                                            <Image src={priorityIcons[label]} alt="priorities-icons" />
+                                            {label}
+                                        </div>
+                                    </SelectItem>
+                                )
+                            })}
                         </SelectGroup>
                     </SelectContent>
                 </Select>
@@ -86,3 +86,4 @@ export function SelectPriority({ name, form, disabled, value }: SelectController
         />
     );
 }
+

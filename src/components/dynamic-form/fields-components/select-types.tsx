@@ -1,11 +1,10 @@
 'use client'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useBrynhildrData } from "@/hooks/brynhildr-data/brynhildr-data";
 import { SelectControllerProps } from "@/shared/interfaces/dynamic-form";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
-import { useGetIssueTypes } from "../services/use-dynamic-form-queries";
 
 interface IssueType {
   id: string;
@@ -20,16 +19,8 @@ interface SelectTypesProps extends SelectControllerProps {
 
 export function SelectTypes({ name, form, projectKey, disabled }: SelectTypesProps) {
 
-  const [data, setData] = useState<IssueType[]>([]);
-
-  async function getTypesByProject() {
-    const { data: result } = useGetIssueTypes(projectKey);
-    setData(result);
-  }
-
-  useEffect(() => {
-    getTypesByProject();
-  }, []);
+  const { useGetIssueTypes } = useBrynhildrData();
+  const { data: types } = useGetIssueTypes(projectKey);
 
   return (
     <Controller
@@ -40,7 +31,7 @@ export function SelectTypes({ name, form, projectKey, disabled }: SelectTypesPro
           <Select
             disabled={disabled}
             value={field.value?.id || ''}
-            onValueChange={(value) => field.onChange(data.find(item => item.id === value))}
+            onValueChange={(value) => field.onChange(types.find(item => item.id === value))}
           >
             <SelectTrigger>
               <SelectValue placeholder="Selecione">
@@ -63,7 +54,7 @@ export function SelectTypes({ name, form, projectKey, disabled }: SelectTypesPro
               <div>
                 <SelectGroup>
                   <SelectLabel>Padrão</SelectLabel>
-                  {data.filter(el => !el.subtask).map((el, idx) => (
+                  {types.filter(el => !el.subtask).map((el, idx) => (
                     <SelectItem key={idx} value={el.id}>
                       <div className="flex items-center gap-1">
                         {el.iconUrl &&
@@ -85,7 +76,7 @@ export function SelectTypes({ name, form, projectKey, disabled }: SelectTypesPro
                 <Separator className="my-1" />
                 <SelectGroup>
                   <SelectLabel>Subtarefas</SelectLabel>
-                  {data.filter(el => el.subtask).map((el, idx) => (
+                  {types.filter(el => el.subtask).map((el, idx) => (
                     <SelectItem key={idx} value={el.id}>
                       <div className="flex items-center gap-1">
                         {el.iconUrl &&

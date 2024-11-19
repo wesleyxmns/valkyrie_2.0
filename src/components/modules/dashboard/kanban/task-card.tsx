@@ -10,7 +10,6 @@ import { Fragment, useMemo } from "react";
 // import { useTaskCard } from "./hooks/use-task-card";
 
 export function TaskCard({ tasks, index, columnid }) {
-  console.log('tasks', tasks);
   // const {
   //   onMouseDownCapture,
   //   isActive,

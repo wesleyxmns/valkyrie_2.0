@@ -2,11 +2,12 @@
 import { Badge } from "@/components/ui/badge";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useBrynhildrData } from "@/hooks/brynhildr-data/brynhildr-data";
 import { IssueTypes } from "@/shared/enums/jira-enums/issue-types";
 import { SelectControllerProps } from "@/shared/interfaces/dynamic-form";
-import { Fragment, useEffect, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { Fragment, useState } from "react";
 import { Controller } from "react-hook-form";
-import { useGetListStatuses } from "../services/use-dynamic-form-queries";
 
 interface SelectTaskStatus extends SelectControllerProps {
   showComponent?: boolean;
@@ -14,29 +15,27 @@ interface SelectTaskStatus extends SelectControllerProps {
 }
 
 export function SelectStatus({ form, name, projectKey, value, disabled, showComponent = true }: SelectTaskStatus) {
+  const { useGetListStatuses } = useBrynhildrData()
+  const { data } = useGetListStatuses(projectKey);
 
-  const [data, setData] = useState<Record<string, any>[]>([]);
   const [selectedValue, setSelectedValue] = useState<string>("");
 
-  function getTaskStatuses() {
-    const { data: result } = useGetListStatuses(projectKey);
-    const filteredStatus = result.filter((el: Record<string, any>) => el.name === IssueTypes.EPIC);
+  const mutation = useMutation({
+    mutationFn: () => {
+      const filteredStatus = data.filter((el: Record<string, any>) => el.name === IssueTypes.EPIC);
 
-    const uniqueStatuses = Array.from(new Set(filteredStatus.map(status => status.id)))
-      .map(id => filteredStatus.find(status => status.id === id));
+      const uniqueStatuses = Array.from(new Set(filteredStatus.map(status => status.id)))
+        .map(id => filteredStatus.find(status => status.id === id));
 
-    setData(uniqueStatuses);
-  }
+      return Promise.resolve(uniqueStatuses);
+    },
+  })
 
   const handleSelectChange = (value: string) => {
     const parsedValue = JSON.parse(value);
     form.setValue(name, parsedValue);
     setSelectedValue(value);
   };
-
-  useEffect(() => {
-    getTaskStatuses();
-  }, []);
 
   return (
     <Fragment>
@@ -58,7 +57,7 @@ export function SelectStatus({ form, name, projectKey, value, disabled, showComp
                     </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
-                    {data.map((el, idx) => (
+                    {mutation.data && mutation.data.map((el, idx) => (
                       <SelectGroup key={idx}>
                         {el.status.map((element, itemIdx) => {
                           const badgeColorClass = badgeColorClasses[element.statusCategory.colorName] || 'default';

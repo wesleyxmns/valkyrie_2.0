@@ -1,11 +1,10 @@
 'use client';
 import MultiSelect from '@/components/ui/multi-select';
-import { useGetAllProjects } from '@/hooks/queries/use-brynhildr-queries';
+import { useBrynhildrData } from '@/hooks/brynhildr-data/brynhildr-data';
 import { CustomFields } from '@/shared/constants/jira/jira-custom-fields';
 import { SelectControllerProps } from '@/shared/interfaces/dynamic-form';
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
-import { toast } from 'sonner';
 
 interface ClientProps extends SelectControllerProps {
     projectKey: string;
@@ -13,29 +12,23 @@ interface ClientProps extends SelectControllerProps {
 }
 
 export function SelectClient({ form, projectKey, name, disabled, value }: ClientProps) {
-    const hasFetched = useRef(false);
-    const [clients, setClients] = useState<Array<{ label: string; value: string }>>([]);
+    const [clients, setClients] = useState<{ label: string; value: string }[]>([]);
     const [selectDisabled, setSelectDisabled] = useState<boolean>(true);
 
-    function getClients() {
-        setSelectDisabled(true);
-        const loadingToastId = toast.loading('Buscando Clientes...');
-        try {
-            const { data: projects } = useGetAllProjects()
-            const list = projects?.filter(
-                (project: Record<string, any>) => project?.projectCategory?.name === "CLIENTES"
-            );
-            const clientList = list?.map((project: any) => project.name);
-            const _clientList = clientList.map(client => ({ label: client, value: client }))
-            setClients(_clientList);
-            toast.success('Tudo pronto', {
-                id: loadingToastId,
-            });
+    const { useGetAllProjects } = useBrynhildrData()
+    const { data: projects } = useGetAllProjects()
+
+    const _clientList = projects?.filter(
+        (project: Record<string, any>) => project?.projectCategory?.name === "CLIENTES"
+    );
+
+    function setClientList() {
+        if (projects) {
+            const clientList = _clientList?.map((project: Record<string, any>) => project.name);
+            const mappedClientList = clientList.map((client: string) => ({ label: client, value: client }));
             setSelectDisabled(false);
-        } catch (error) {
-            toast.error('Erro ao buscar os clientes', {
-                id: loadingToastId,
-            });
+            setClients(mappedClientList);
+        } else {
             setSelectDisabled(false);
         }
     }
@@ -47,11 +40,8 @@ export function SelectClient({ form, projectKey, name, disabled, value }: Client
     };
 
     useEffect(() => {
-        if (!hasFetched.current && !disabled) {
-            hasFetched.current = true;
-            getClients();
-        }
-    }, [projectKey, disabled]);
+        setClientList();
+    }, [projectKey, disabled, projects]);
 
     useEffect(() => {
         if (value) {

@@ -1,17 +1,13 @@
-import {
-  useGetAllListUsers,
-  useGetPriorities,
-  useGetProjectDetailsQuery,
-  useGetProjectStatusQuery,
-  useStorysJQLBuilder
-} from "@/hooks/queries/use-brynhildr-queries";
+import { BrynhildrService } from "@/services/external/brynhildr -service/brynhildr -service";
 import { CustomFields } from "@/shared/constants/jira/jira-custom-fields";
+
+const brynhildrService = new BrynhildrService();
 
 export class DynamicFormService {
 
   async getIssueTypes(projectKey: string) {
-    const { data: issueTypesTasks } = useGetProjectDetailsQuery(projectKey)
-    const objTypes = issueTypesTasks.issueTypes?.map((el: Record<string, any>) => ({
+    const data = await brynhildrService.getProjectDetails(projectKey)
+    const objTypes = data.issueTypes?.map((el: Record<string, any>) => ({
       name: el.name,
       id: el.id,
       iconUrl: el.iconUrl,
@@ -31,8 +27,8 @@ export class DynamicFormService {
         };
 
         const _infoQuery = { infoQuery: groupOptions }
-        const { data: storysIssues } = useStorysJQLBuilder(_infoQuery)
-        const _issues = storysIssues.issues;
+        const data = await brynhildrService.storysJQLBuilder(_infoQuery)
+        const _issues = data.issues;
 
         for (const issue of _issues) {
           const opValue = issue.fields[CustomFields.OP.id];
@@ -51,9 +47,9 @@ export class DynamicFormService {
 
   async getListAllUsers() {
     try {
-      const { data: usersList } = useGetAllListUsers();
+      const data = await brynhildrService.getListAllUsers()
 
-      const listUsers = usersList.map((user: Record<string, any>) => ({
+      const listUsers = data.map((user: Record<string, any>) => ({
         label: user.displayName,
         value: user.name,
         avatar: user.avatarUrls['48x48'],
@@ -67,9 +63,9 @@ export class DynamicFormService {
 
   async getListPriorities() {
     try {
-      const { data: priorities } = useGetPriorities();
+      const data = await brynhildrService.getListPriorities()
 
-      const listPriorities = priorities.map((p: Record<string, any>) => ({
+      const listPriorities = data.map((p: Record<string, any>) => ({
         id: p.id,
         label: p.name,
         value: p.name,
@@ -84,7 +80,7 @@ export class DynamicFormService {
 
   async getProjectStatus(projectKey: string) {
     try {
-      const { data } = useGetProjectStatusQuery(projectKey)
+      const data = await brynhildrService.getProjectStatus(projectKey)
 
       const statusesStructure = data.map((el: Record<string, any>) => ({
         name: el.name,

@@ -6,6 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@/hooks/auth/use-auth";
+import { useBrynhildrData } from "@/hooks/brynhildr-data/brynhildr-data";
+import { useComments } from "@/hooks/comments/use-comments";
+import { avoidDefaultDomBehavior } from "@/shared/functions/avoidDefaultDomBehavior";
+import { getInitials } from "@/shared/functions/get-initials";
 import { formatDate } from 'date-fns';
 import { Bold, Italic, Palette, Paperclip, SendIcon, X } from 'lucide-react';
 import Image from "next/image";
@@ -14,19 +19,13 @@ import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { HexColorPicker } from "react-colorful";
 import { toast } from "sonner";
 import ImageAudio from '../../../public/assets/images/png/audio.png';
-import ImageDWG from '../../../public/assets/images/png/dwg.png'
+import ImageDWG from '../../../public/assets/images/png/dwg.png';
 import ImageEmail from '../../../public/assets/images/png/email.png';
-import ImagePDF from '../../../public/assets/images/png/pdf.png'
-import ImageSTL from '../../../public/assets/images/png/stl.png'
+import ImagePDF from '../../../public/assets/images/png/pdf.png';
+import ImageSTL from '../../../public/assets/images/png/stl.png';
 import ImageVideo from '../../../public/assets/images/png/video.png';
-import ImageZIP from '../../../public/assets/images/png/zip.png'
+import ImageZIP from '../../../public/assets/images/png/zip.png';
 import { Label } from "./label";
-import { buildJiraAuthorization } from "@/shared/builds/build-jira-authorization";
-import { useGetCommentsAndAttachs, useSendAttachments, useSendComment } from "@/hooks/queries/use-brynhildr-queries";
-import { useAuth } from "@/hooks/auth/use-auth";
-import { useComments } from "@/hooks/comments/use-comments";
-import { avoidDefaultDomBehavior } from "@/shared/functions/avoidDefaultDomBehavior";
-import { getInitials } from "@/shared/functions/get-initials";
 
 interface TextFormat {
   bold: boolean;
@@ -46,6 +45,8 @@ interface CommentsDialogProps {
 }
 
 export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
+  const { useGetCommentsAndAttachs, useSendAttachments, useSendComment } = useBrynhildrData()
+
   const { user } = useAuth();
   const { '@valkyrie:auth-token': token } = parseCookies();
   const { comment, attachments, setComment, setAttachments } = useComments();
