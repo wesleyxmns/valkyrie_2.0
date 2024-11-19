@@ -1,4 +1,5 @@
 'use client'
+import { ToggleCreateIssue } from "@/components/modules/dashboard/issues/toggle-create-issue/toggle-create-issue";
 import { categorizeIssues } from "@/components/modules/dashboard/kanban/functions/caregorizeIssues";
 import { Kanban } from "@/components/modules/dashboard/kanban/kanban";
 import { KanbanLoading } from "@/components/modules/dashboard/kanban/kanban-loading";
@@ -6,8 +7,8 @@ import { Header } from "@/components/modules/dashboard/main-area-header";
 import { ShinyButton } from "@/components/ui/shiny-button";
 import { UserDTO } from "@/dtos/responses/user-dto";
 import { useAuth } from "@/hooks/auth/use-auth";
+import { useBrynhildrData } from "@/hooks/brynhildr-data/brynhildr-data";
 import { useKanban } from "@/hooks/kanban/use-kanban";
-import { useGetAllTasks, useGetProjectDetailsQuery, useGetProjectStatusQuery } from "@/hooks/queries/use-brynhildr-queries";
 import { useEffect, useMemo } from "react";
 
 interface BoardProps {
@@ -17,13 +18,15 @@ interface BoardProps {
 }
 
 export default function BoardPage({ params }: BoardProps) {
+  const { useGetAllTasks, useGetProjectDetailsQuery, useGetProjectStatusQuery } = useBrynhildrData();
   const { user } = useAuth();
   const { projectKey } = params;
 
-  const { columns, updateColumns } = useKanban();
   const { data: projectDetails, isLoading } = useGetProjectDetailsQuery(projectKey);
   const { data: tasks } = useGetAllTasks(user as UserDTO, projectKey);
   const { data: statusOfEachTasks } = useGetProjectStatusQuery(projectKey)
+
+  const { columns, updateColumns } = useKanban();
 
   const filterOptionSelected: string[] = [];
   const data = tasks || [];
@@ -50,11 +53,11 @@ export default function BoardPage({ params }: BoardProps) {
             {projectDetails?.name}
           </Header.H1>
           <Header.Actions>
-            {/* <ToggleCreateIssue projectKey={projectDetails.key}> */}
-            <ShinyButton>
-              Abrir Relatório
-            </ShinyButton>
-            {/* </ToggleCreateIssue> */}
+            <ToggleCreateIssue projectKey={projectDetails?.key}>
+              <ShinyButton>
+                Abrir Relatório
+              </ShinyButton>
+            </ToggleCreateIssue>
           </Header.Actions>
         </Header.Content>
         {isLoading ? (
