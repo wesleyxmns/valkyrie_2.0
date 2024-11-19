@@ -215,4 +215,35 @@ export class BrynhildrService {
       throw error;
     }
   }
+
+  async getTransitions(issueKey: string, userAuthorization?: string) {
+    try {
+      const response = await brynhildrAPI(`/transition/${issueKey}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': userAuthorization || ''
+        }
+      })
+      const { transitions } = await response.json();
+      return transitions;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async doTransition(issueKey: string, transitionId: string, userAuthorization?: string) {
+    const res = await brynhildrAPI(`/transition/${issueKey}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': userAuthorization ? userAuthorization : buildJiraAuthorization(),
+      },
+      body: JSON.stringify({ transitionId }),
+    });
+
+    return await res;
+  }
 }
+
+
