@@ -6,79 +6,85 @@ import { buildJiraAuthorization } from "@/shared/builds/build-jira-authorization
 import { JiraCategories } from "@/shared/enums/jira-enums/jira-categories";
 
 export class BrynhildrService {
+  createIssue = async ({ fields, userAuthorization }: { fields: Record<string, any>, userAuthorization?: string }) => {
+    const authorization = `${userAuthorization || buildJiraAuthorization()}`;
+    const body = JSON.stringify(fields);
 
-  async getProjectDetails(projectKey: string) {
     try {
-      const res = await brynhildrAPI(`/project/${projectKey}`, {
-        method: 'GET',
+      const res = await brynhildrAPI('/issue', {
+        method: 'POST',
         headers: {
-          'Authorization': buildJiraAuthorization()
-        }
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': authorization
+        },
+        body
+      })
+      const issueCreated = await res.json();
+      return issueCreated;
+    } catch (error) {
+      throw new Error(`Erro ao criar a tarefa: ${error instanceof Error ? error.message : error}`);
+    }
+  }
+
+  sendComment = async (issueKey: string, comment: string, token: string) => {
+    try {
+      const res = await brynhildrAPI(`/comment/${issueKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${token}`,
+        },
+        body: JSON.stringify({ body: comment })
       });
-      if (!res.ok) {
-        throw new Error(`Failed to fetch project details: ${res.statusText}`);
-      }
-      return await res.json();
+      const data = await res.json();
+      return data;
     } catch (error) {
       throw error;
     }
   }
 
-  async getProjectStatus(projectKey: string) {
-    try {
-      const res = await brynhildrAPI(`/project/${projectKey}/statuses`, {
-        method: 'GET',
-        headers: {
-          'Authorization': buildJiraAuthorization()
-        }
+  sendAttachments = async ({ issueKey, files }: { issueKey: string; files: File[] }) => {
+    const formData = new FormData();
+
+    formData.append("issueKey", issueKey);
+
+    if (files && files.length > 0) {
+      files.forEach((file) => {
+        formData.append(`files`, file);
       });
-      if (!res.ok) {
-        throw new Error(`Failed to fetch project status: ${res.statusText}`);
-      }
-      return await res.json();
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getTasks(user: UserDTO, projectKey: string) {
-    if (!user) {
-      throw new Error('User is required to get tasks.');
     }
 
-    let jql: string;
-
-    switch (projectKey) {
-      case JiraCategories.QUALITY_REPORT:
-        const validator = new TaskAccessValidator(user);
-        jql = validator.getTaskJQL();
-        break;
-      default:
-        throw new Error(`Unsupported project key: ${projectKey}`);
-    }
-
-    if (!jql) {
-      throw new Error(`Failed to generate JQL for project key: ${projectKey}`);
-    }
-
-    const result = await brynhildrAPI(`/search?jql=${jql}`, {
-      method: 'GET',
-      headers: { 'Authorization': buildJiraAuthorization() },
+    const result = await brynhildrAPI(`/attachment/${issueKey}`, {
+      method: "POST",
+      headers: {
+        "Authorization": buildJiraAuthorization()
+      },
+      body: formData
     });
 
-    const issuesData = (await result.json()).issues;
-
-    return issuesData;
+    return await result.json();
   }
 
-  async storysJQLBuilder({ infoQuery }: Record<string, any>) {
+  doTransition = async (issueKey: string, transitionId: string, userAuthorization?: string) => {
+    const res = await brynhildrAPI(`/transition/${issueKey}`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': userAuthorization ? userAuthorization : buildJiraAuthorization(),
+      },
+      body: JSON.stringify({ transitionId }),
+    });
 
+    return await res;
+  }
+
+  storysJQLBuilder = async ({ infoQuery }: Record<string, any>) => {
     const itemsQuery: string[] = [];
 
     Object.keys(infoQuery).forEach(function (item: any) {
       if (infoQuery[item]) {
         if (item === "op") {
-
           itemsQuery.push(`SB_OP ~ "${infoQuery.op}"`);
         }
         if (item === "client") {
@@ -113,9 +119,88 @@ export class BrynhildrService {
     const issues = await result.json();
 
     return issues;
-  };
+  }
 
-  async getAllProjects() {
+  getIssue = async (issueKey: string, userAuthorization?: string) => {
+    try {
+      const newIssueResponse = await brynhildrAPI(`/issue/${issueKey}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': userAuthorization || ''
+        }
+      });
+      const newIssue = await newIssueResponse.json()
+      return newIssue;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getProjectDetails = async (projectKey: string) => {
+    try {
+      const res = await brynhildrAPI(`/project/${projectKey}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': buildJiraAuthorization()
+        }
+      });
+      if (!res.ok) {
+        throw new Error(`Failed to fetch project details: ${res.statusText}`);
+      }
+      return await res.json();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getProjectStatus = async (projectKey: string) => {
+    try {
+      const res = await brynhildrAPI(`/project/${projectKey}/statuses`, {
+        method: 'GET',
+        headers: {
+          'Authorization': buildJiraAuthorization()
+        }
+      });
+      if (!res.ok) {
+        throw new Error(`Failed to fetch project status: ${res.statusText}`);
+      }
+      return await res.json();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getTasks = async (user: UserDTO, projectKey: string) => {
+    if (!user) {
+      throw new Error('User is required to get tasks.');
+    }
+
+    let jql: string;
+
+    switch (projectKey) {
+      case JiraCategories.QUALITY_REPORT:
+        const validator = new TaskAccessValidator(user);
+        jql = validator.getTaskJQL();
+        break;
+      default:
+        throw new Error(`Unsupported project key: ${projectKey}`);
+    }
+
+    if (!jql) {
+      throw new Error(`Failed to generate JQL for project key: ${projectKey}`);
+    }
+
+    const result = await brynhildrAPI(`/search?jql=${jql}`, {
+      method: 'GET',
+      headers: { 'Authorization': buildJiraAuthorization() },
+    });
+
+    const issuesData = (await result.json()).issues;
+
+    return issuesData;
+  }
+
+  getAllProjects = async () => {
     try {
       const result = await brynhildrAPI('/project', {
         method: 'GET',
@@ -130,7 +215,7 @@ export class BrynhildrService {
     }
   }
 
-  async getListAllUsers() {
+  getListAllUsers = async () => {
     try {
       const group = 'jira-software-users'
       const response = await brynhildrAPI(`/groups/${group}`, {
@@ -146,7 +231,7 @@ export class BrynhildrService {
     }
   }
 
-  async getListPriorities() {
+  getListPriorities = async () => {
     try {
       const response = await brynhildrAPI('/priority', {
         method: 'GET',
@@ -161,29 +246,7 @@ export class BrynhildrService {
     }
   }
 
-  async sendAttachments({ issueKey, files }: { issueKey: string; files: File[] }) {
-    const formData = new FormData();
-
-    formData.append("issueKey", issueKey);
-
-    if (files && files.length > 0) {
-      files.forEach((file) => {
-        formData.append(`files`, file);
-      });
-    }
-
-    const result = await brynhildrAPI(`/attachment/${issueKey}`, {
-      method: "POST",
-      headers: {
-        "Authorization": buildJiraAuthorization()
-      },
-      body: formData
-    });
-
-    return await result.json();
-  }
-
-  async getCommentsAndAttachs(issueKey: string) {
+  getCommentsAndAttachs = async (issueKey: string) => {
     try {
       const res = await brynhildrAPI(`/issue/${issueKey}`, {
         method: 'GET',
@@ -199,24 +262,7 @@ export class BrynhildrService {
     }
   }
 
-  async sendComment(issueKey: string, comment: string, token: string) {
-    try {
-      const res = await brynhildrAPI(`/comment/${issueKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${token}`,
-        },
-        body: JSON.stringify({ body: comment })
-      });
-      const data = await res.json();
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async getTransitions(issueKey: string, userAuthorization?: string) {
+  getTransitions = async (issueKey: string, userAuthorization?: string) => {
     try {
       const response = await brynhildrAPI(`/transition/${issueKey}`, {
         method: 'GET',
@@ -231,19 +277,4 @@ export class BrynhildrService {
       throw error;
     }
   }
-
-  async doTransition(issueKey: string, transitionId: string, userAuthorization?: string) {
-    const res = await brynhildrAPI(`/transition/${issueKey}`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': userAuthorization ? userAuthorization : buildJiraAuthorization(),
-      },
-      body: JSON.stringify({ transitionId }),
-    });
-
-    return await res;
-  }
 }
-
-
