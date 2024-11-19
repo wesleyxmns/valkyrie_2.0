@@ -14,7 +14,6 @@ import { parseCookies } from "nookies";
 
 export function useCreateTaskByReport() {
     const { '@valkyrie:auth-token': token } = parseCookies();
-    const { useSendAttachments } = useBrynhildrData()
     async function createQualityReport(fields: Record<string, any>) {
         const { epicBody, sendMaterialToCustomerBody, registrarPedidoEmGarantia } = RequestBodys;
         try {
@@ -36,9 +35,9 @@ export function useCreateTaskByReport() {
                 // FUNÇÃO QUE CONSTRÓI A ESTRUTURA DAS SUBTAREFAS
                 const _issues = buildIssueStructure({ parentKey: result.key, subtasks: fields.subtasks })
                 // ENVIO DOS ATTACHMENTS
-                if (fields.attachments?.length > 0) {
-                    useSendAttachments(result.key, fields.attachments)
-                }
+                // if (fields.attachments?.length > 0) {
+                //     useSendAttachments(result.key, fields.attachments)
+                // }
                 // CRIAÇÃO DAS SUBTAREFAS
                 if (_issues?.length > 0) {
                     await brynhildrAPI('/issue/bulk', {
