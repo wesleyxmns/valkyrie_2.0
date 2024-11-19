@@ -1,15 +1,23 @@
 'use client'
+import { BrynhildrContext } from "@/contexts/brynhildr-data/brynhildr-data-context";
 import { UserDTO } from "@/dtos/responses/user-dto";
 import { BrynhildrService } from "@/services/external/brynhildr -service/brynhildr -service";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { ReactNode } from "react";
-import { BrynhildrContext } from "@/contexts/brynhildr-data/brynhildr-data-context";
 import { DynamicFormService } from "@/services/internal/dynamic-form-service/dynamic-form-service";
+import { useQuery } from "@tanstack/react-query";
+import { ReactNode } from "react";
 
 const dynamicFormService = new DynamicFormService();
 const brynhildrService = new BrynhildrService();
 
 export function BrynhildrProvider({ children }: { children: ReactNode }) {
+
+  const useGetIssue = (issueKey: string, userAuthorization?: string) => {
+    return useQuery({
+      queryKey: ['issueTypes', issueKey, userAuthorization],
+      queryFn: () => brynhildrService.getIssue(issueKey, userAuthorization),
+      enabled: !!issueKey,
+    });
+  };
 
   const useGetIssueTypes = (projectKey: string) => {
     return useQuery({
@@ -101,22 +109,10 @@ export function BrynhildrProvider({ children }: { children: ReactNode }) {
     })
   }
 
-  const useSendAttachments = (issueKey: string, files: File[]) => {
-    return useMutation({
-      mutationFn: () => brynhildrService.sendAttachments({ issueKey, files }),
-    });
-  }
-
   const useGetCommentsAndAttachs = (issueKey: string) => {
     return useQuery({
       queryKey: ['commentsAndAttachs', issueKey],
       queryFn: () => brynhildrService.getCommentsAndAttachs(issueKey),
-    })
-  }
-
-  const useSendComment = (issueKey: string, comment: string, token: string) => {
-    return useMutation({
-      mutationFn: () => brynhildrService.sendComment(issueKey, comment, token),
     })
   }
 
@@ -127,13 +123,8 @@ export function BrynhildrProvider({ children }: { children: ReactNode }) {
     });
   }
 
-  const useDoTransition = (issueKey: string, transitionId: string, userAuthorization?: string) => {
-    return useMutation({
-      mutationFn: () => brynhildrService.doTransition(issueKey, transitionId, userAuthorization),
-    })
-  }
-
   const value = {
+    useGetIssue,
     useGetIssueTypes,
     useGetOpsForClients,
     useGetListAllUsers,
@@ -146,11 +137,8 @@ export function BrynhildrProvider({ children }: { children: ReactNode }) {
     useGetAllProjects,
     useGetAllListUsers,
     useGetPriorities,
-    useSendAttachments,
     useGetCommentsAndAttachs,
-    useSendComment,
     useGetTransitions,
-    useDoTransition,
   };
 
   return (
