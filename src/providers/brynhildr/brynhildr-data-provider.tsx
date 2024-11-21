@@ -1,7 +1,7 @@
 'use client'
 import { BrynhildrContext } from "@/contexts/brynhildr-data/brynhildr-data-context";
 import { UserDTO } from "@/dtos/responses/user-dto";
-import { BrynhildrService } from "@/services/external/brynhildr -service/brynhildr -service";
+import { BrynhildrService } from "@/services/external/brynhildr-service/brynhildr-service";
 import { DynamicFormService } from "@/services/internal/dynamic-form-service/dynamic-form-service";
 import { useQuery } from "@tanstack/react-query";
 import { ReactNode } from "react";
@@ -53,6 +53,7 @@ export function BrynhildrProvider({ children }: { children: ReactNode }) {
     return useQuery({
       queryKey: ['listStatuses', projectKey],
       queryFn: () => dynamicFormService.getProjectStatus(projectKey),
+      enabled: !!projectKey,
     });
   };
 
@@ -113,6 +114,7 @@ export function BrynhildrProvider({ children }: { children: ReactNode }) {
     return useQuery({
       queryKey: ['commentsAndAttachs', issueKey],
       queryFn: () => brynhildrService.getCommentsAndAttachs(issueKey),
+      enabled: !!issueKey,
     })
   }
 
@@ -120,11 +122,29 @@ export function BrynhildrProvider({ children }: { children: ReactNode }) {
     return useQuery({
       queryKey: ['transitions', issueKey],
       queryFn: () => brynhildrService.getTransitions(issueKey, userAuthorization),
+      enabled: !!issueKey,
+    });
+  }
+
+  const useGetActions = (issueKeys: string[]) => {
+    return useQuery({
+      queryKey: ['actions', issueKeys],
+      queryFn: () => brynhildrService.getActions({ issueKeys }),
+      enabled: !!issueKeys,
+    });
+  }
+
+  const useGetCauseAnalysis = (epicName: string) => {
+    return useQuery({
+      queryKey: ['causeAnalysis', epicName],
+      queryFn: () => brynhildrService.getCauseAnalysis({ epicName }),
+      enabled: !!epicName,
     });
   }
 
   const value = {
     useGetIssue,
+    useGetActions,
     useGetIssueTypes,
     useGetOpsForClients,
     useGetListAllUsers,
@@ -139,6 +159,7 @@ export function BrynhildrProvider({ children }: { children: ReactNode }) {
     useGetPriorities,
     useGetCommentsAndAttachs,
     useGetTransitions,
+    useGetCauseAnalysis,
   };
 
   return (
