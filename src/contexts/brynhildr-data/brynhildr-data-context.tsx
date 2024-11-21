@@ -18,6 +18,8 @@ interface BrynhildrContextType {
   useGetPriorities: () => UseQueryResult<any, unknown>;
   useGetCommentsAndAttachs: (issueKey: string) => UseQueryResult<any, unknown>;
   useGetTransitions: (issueKey: string, userAuthorization?: string) => UseQueryResult<any, unknown>;
+  useGetActions: (issueKeys: string[]) => UseQueryResult<any, unknown>;
+  useGetCauseAnalysis: (epicName: string) => UseQueryResult<any, unknown>;
 }
 
-export const BrynhildrContext = createContext<BrynhildrContextType | null>(null);
+export const BrynhildrContext = createContext<BrynhildrContextType | null>(null); 
