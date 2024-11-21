@@ -1,6 +1,6 @@
 import { Navbar } from "@/components/common/nav-bar"
 import { ReactNode } from "react"
-import AuthRouteBackground from '../../../public/assets/images/jpeg/background-route-auth.jpg'
+import AuthRouteBackground from '../../../public/svg/background-route-auth1.svg'
 
 const AuthLayout = ({ children }: { children: ReactNode }) => {
   return (

@@ -1,4 +1,6 @@
 'use client'
+import { ActionsCreateForm } from "@/components/modules/dashboard/issues/actions/actions-create-form";
+import { ActionsTable } from "@/components/modules/dashboard/issues/actions/actions-table";
 import { Comments } from "@/components/ui/coments";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { CustomFields } from "@/shared/constants/jira/jira-custom-fields";
@@ -29,9 +31,9 @@ import { SelectTypes } from "../fields-components/select-types";
 import { SelectUsers } from "../fields-components/select-users";
 import { SelectSendMaterialToCustomer } from "../fields-components/send-material-to-customer";
 import { TextArea } from "../fields-components/text-area";
+import { ActionsList } from "@/components/modules/dashboard/issues/actions/actions-list";
 
 export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: UseComponentFiledProps) {
-
   const [textFieldsComponentsValues, setTextFieldsComponentsValues] = useState({
     summary: fields.summary || '',
     reporter: fields.reporter?.displayName || '',
@@ -339,9 +341,9 @@ export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: 
         <SelectTypes form={form} name='types' projectKey={projectKey} />
       </FloatingLabelInput>,
 
-    // "subtasks": <ActionForm />,
-    // "subtaskTable": <ActionsTable />,
-    // "subtasksList": <ActionsList showComponent={fields.issuetype?.id === IssueTypesId.EPIC && fields.subtasks?.length > 0} />,
+    "actions": <ActionsCreateForm epicKey={epicKey as string} projectKey={projectKey} />,
+    "actionsTable": <ActionsTable />,
+    "actionsList": <ActionsList actions={fields.subtasks} isVisible={fields.issuetype?.id === IssueTypesId.EPIC && fields.subtasks?.length > 0} />,
 
     [CustomFields.PRAZO.id]:
       <InsertDeadline

@@ -5,7 +5,7 @@ import { useActions } from '@/hooks/actions/use-actions';
 import { useAuth } from '@/hooks/auth/use-auth';
 import { useKanban } from '@/hooks/kanban/use-kanban';
 import { HttpStatus } from '@/lib/fetch/constants/http-status';
-import { BrynhildrService } from '@/services/external/brynhildr -service/brynhildr -service';
+import { BrynhildrService } from '@/services/external/brynhildr-service/brynhildr-service';
 import { CustomFields } from '@/shared/constants/jira/jira-custom-fields';
 import { JiraStatusesId } from '@/shared/enums/jira-enums/jira-statuses-id';
 import { RNCEpicTransitionsId } from '@/shared/enums/rnc-enums/rnc-epic-transitions-id';
@@ -19,11 +19,12 @@ import { useCallback, useMemo, useState } from 'react';
 import { FieldValues, SubmitHandler } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useCreateTaskByReport } from './use-create-task-by-report';
+import { buildRncActionsIssuesBulk } from '@/shared/builds/build-actions-rnc-issues-bulk';
 
 const brynhildrService = new BrynhildrService();
 
 const useCreateManual = (projectKey: string) => {
-  const { createIssue, getIssue, getTransitions, doTransition, sendAttachments } = brynhildrService
+  const { createIssue, createBulkIssues, getIssue, getTransitions, doTransition, sendAttachments } = brynhildrService
 
   const { user } = useAuth();
   const { '@valkyrie:auth-token': token } = parseCookies();
@@ -97,6 +98,15 @@ const useCreateManual = (projectKey: string) => {
         await qualityIssueInTodo(data.key)
         if (form.getValues().attachments.length > 0) {
           await sendAttachments({ issueKey: data.key, files: form.getValues().attachments });
+        }
+        if (actions.length > 0) {
+          const _actions = buildRncActionsIssuesBulk({ actions, parentKey: data.key });
+          if (_actions.length > 0) {
+            await createBulkIssues({
+              issues: _actions,
+              userAuthorization,
+            });
+          }
         }
         toast.success(`Tarefa ${data.key} criada com sucesso`);
         handleCloseDialog();

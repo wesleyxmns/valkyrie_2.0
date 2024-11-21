@@ -1,4 +1,3 @@
-/* eslint-disable array-callback-return */
 'use client'
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
@@ -55,8 +54,9 @@ const AttachmentThumbnail = ({ attachment, onClick }) => {
   )
 
   const handleDownload = (e) => {
+    e.preventDefault()
     e.stopPropagation()
-    const downloadUrl = `${JIRA_PROXY_URL}=${encodeURIComponent(attachment.content)}`
+    const downloadUrl = `${JIRA_PROXY_URL}${encodeURIComponent(attachment.content)}`
     window.open(downloadUrl, '_blank')
   }
 
@@ -84,6 +84,7 @@ const AttachmentThumbnail = ({ attachment, onClick }) => {
           size="icon"
           variant="ghost"
           onClick={(e) => {
+            e.preventDefault()
             e.stopPropagation()
             onClick()
           }}
@@ -330,23 +331,27 @@ const AttachmentThumbnails = ({ attachments }) => {
     <div className="border rounded-md">
       <div className="flex flex-wrap gap-2 sm:gap-4 p-2 sm:p-4 w-full h-full overflow-x-auto">
         {attachments.map((attachment, index) => {
-          ;<AttachmentThumbnail
-            key={attachment.id}
-            attachment={attachment}
-            onClick={() => handlePreview(index)}
-          />
+          return (
+            <AttachmentThumbnail
+              key={attachment.id}
+              attachment={attachment}
+              onClick={() => handlePreview(index)}
+            />
+          )
         })}
       </div>
-      {previewIndex !== null && (
-        <AttachmentPreview
-          attachments={attachments}
-          currentIndex={previewIndex}
-          onClose={handleClosePreview}
-          onPrevious={handlePreviousAttachment}
-          onNext={handleNextAttachment}
-        />
-      )}
-    </div>
+      {
+        previewIndex !== null && (
+          <AttachmentPreview
+            attachments={attachments}
+            currentIndex={previewIndex}
+            onClose={handleClosePreview}
+            onPrevious={handlePreviousAttachment}
+            onNext={handleNextAttachment}
+          />
+        )
+      }
+    </div >
   )
 }
 

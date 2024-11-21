@@ -45,7 +45,7 @@ interface CommentsDialogProps {
 }
 
 export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
-  const { useGetCommentsAndAttachs, useSendAttachments, useSendComment } = useBrynhildrData()
+  // const { useGetCommentsAndAttachs, useSendAttachments, useSendComment } = useBrynhildrData()
 
   const { user } = useAuth();
   const { '@valkyrie:auth-token': token } = parseCookies();
@@ -58,11 +58,11 @@ export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const sendComment = async () => {
-    if (localComment.trim() !== '') {
-      useSendComment(issueKey as string, localComment, token);
-    }
-  };
+  // const sendComment = async () => {
+  //   if (localComment.trim() !== '') {
+  //     useSendComment(issueKey as string, localComment, token);
+  //   }
+  // };
 
   const resetForm = () => {
     setLocalComment('');
@@ -80,13 +80,13 @@ export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
 
       if (issueKey) {
         if (attachments.length > 0) {
-          useSendAttachments(issueKey, attachments);
+          // useSendAttachments(issueKey, attachments);
         }
 
-        await sendComment();
+        // await sendComment();
         toast.success('Comentário enviado com sucesso!');
         resetForm();
-        getCommentsAndAttachs();
+        // getCommentsAndAttachs();
       }
     } catch (error) {
       toast.error('Erro ao enviar comentário. Por favor, tente novamente.');
@@ -167,16 +167,16 @@ export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
     setComment(comment.replace(attachmentLink, '').trim());
   };
 
-  async function getCommentsAndAttachs() {
-    if (!issueKey) return;
-    const { data: fields } = useGetCommentsAndAttachs(issueKey);
-    setAttachs(fields.attachment);
-    setComments(fields.comment.comments);
-  }
+  // async function getCommentsAndAttachs() {
+  //   if (!issueKey) return;
+  //   const { data: fields } = useGetCommentsAndAttachs(issueKey);
+  //   setAttachs(fields.attachment);
+  //   setComments(fields.comment.comments);
+  // }
 
-  useEffect(() => {
-    getCommentsAndAttachs();
-  }, [])
+  // useEffect(() => {
+  //   getCommentsAndAttachs();
+  // }, [])
 
   return (
     <Fragment>
