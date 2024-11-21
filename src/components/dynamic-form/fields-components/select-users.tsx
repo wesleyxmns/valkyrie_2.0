@@ -9,12 +9,6 @@ import { SelectControllerProps } from "@/shared/interfaces/dynamic-form";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Controller } from "react-hook-form";
 
-interface User {
-    value: string;
-    label: string;
-    avatar: string;
-}
-
 interface SelectUsersProps extends SelectControllerProps {
     showComponent?: boolean;
     id: string;
@@ -23,30 +17,16 @@ interface SelectUsersProps extends SelectControllerProps {
 }
 
 export function SelectUsers({ form, name, value, defaultValue, id, label, disabled, showComponent = true }: SelectUsersProps) {
-    const [data, setData] = useState<User[]>([]);
-
     const { useGetListAllUsers } = useBrynhildrData()
     const { data: allUsers } = useGetListAllUsers();
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                if (allUsers) {
-                    setData(allUsers);
-                }
-            } catch (error) {
-                console.error("Failed to fetch users:", error);
-            }
-        };
-        fetchUsers();
-    }, []);
-
     const userColors = useMemo(() => {
-        return data.reduce((acc, user) => {
+        if (!allUsers) return {};
+        return allUsers.reduce((acc, user) => {
             acc[user.value] = generateUniqueColor();
             return acc;
         }, {} as Record<string, string>);
-    }, [data]);
+    }, [allUsers]);
 
     const isDefaultAvatar = (avatarUrl: string) => {
         return avatarUrl.includes('avatarId=10122');
@@ -71,7 +51,7 @@ export function SelectUsers({ form, name, value, defaultValue, id, label, disabl
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        {data.map((user, idx) => (
+                                        {allUsers && allUsers.map((user, idx) => (
                                             <SelectItem key={idx} value={user.value}>
                                                 <div className="flex items-center gap-1">
                                                     <Avatar className="w-8 h-8 p-1">

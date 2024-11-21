@@ -11,13 +11,17 @@ interface SelectSubtaskProps extends SelectControllerProps {
     projectKey: string;
     defaultValue?: string
     disabled?: boolean;
-    showIds: string[];  // Lista de IDs que você deseja mostrar
+    showIds: string[];
 }
 
 export function SelectIssueTypeSubtask({ form, name, projectKey, disabled, value, showIds, defaultValue }: SelectSubtaskProps) {
+
+
     const { useGetIssueTypes } = useBrynhildrData();
+
     const { data: actionsTypes } = useGetIssueTypes(projectKey);
-    const issuesTypesSubtasks = actionsTypes.filter((item: Record<string, any>) => item.subtask === true);
+
+    const issuesTypesSubtasks = actionsTypes?.filter((item: Record<string, any>) => item.subtask === true);
 
     useEffect(() => {
         if (value) {
@@ -28,7 +32,7 @@ export function SelectIssueTypeSubtask({ form, name, projectKey, disabled, value
         }
     }, [value, form, name, actionsTypes]);
 
-    const filteredIssuesTypes = issuesTypesSubtasks.filter(option => showIds?.includes(option.id));
+    const filteredIssuesTypes = issuesTypesSubtasks?.filter(option => showIds?.includes(option.id));
 
     return (
         <Controller
@@ -42,7 +46,7 @@ export function SelectIssueTypeSubtask({ form, name, projectKey, disabled, value
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
-                            {filteredIssuesTypes.map((option: IssueTypeProps, idx: number) => (
+                            {filteredIssuesTypes?.map((option: IssueTypeProps, idx: number) => (
                                 <SelectItem key={idx} value={option.id}>
                                     <div className="flex items-center gap-1">
                                         {option.iconUrl &&

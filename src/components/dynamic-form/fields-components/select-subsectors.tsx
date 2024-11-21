@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
 import { FloatingLabelInput } from '@/components/ui/floating-label-input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Controller } from 'react-hook-form';
-import { SelectControllerProps } from '@/shared/interfaces/dynamic-form';
 import { IndustrySectorsOptions } from '@/shared/constants/rnc/industry-sectors-options';
+import { SelectControllerProps } from '@/shared/interfaces/dynamic-form';
+import React, { useEffect, useState } from 'react';
+import { Controller } from 'react-hook-form';
 
 interface IndustrySectorsProps extends SelectControllerProps {
   disabled?: boolean;

@@ -34,7 +34,7 @@ export function SelectPriority({ name, form, disabled, value }: SelectController
 
     useEffect(() => {
         if (value) {
-            const initialPriority = priorities.find(p => p.value === value);
+            const initialPriority = priorities?.find(p => p.value === value);
             if (initialPriority) {
                 form.setValue(name, { name: initialPriority.value });
             }
