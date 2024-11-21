@@ -31,7 +31,14 @@ const _ToggleCreateIssue = (
 ) => {
   const [activeTab, setActiveTab] = useState('manual');
 
-  const { form, openDialog, handleOpenChange, onHandleSendFormValues, memoizedFieldsComponents, isSubmitting } = useCreateManual(projectKey);
+  const {
+    form,
+    openDialog,
+    handleOpenChange,
+    onHandleSendFormValues,
+    memoizedFieldsComponents,
+    isSubmitting } = useCreateManual(projectKey);
+
   const {
     form: automaticFormInstance,
     handleSearch,
