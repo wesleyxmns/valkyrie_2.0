@@ -2,35 +2,35 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ContextMenu, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { Separator } from "@/components/ui/separator";
+import { useTaskCard } from "@/hooks/kanban/use-task-card";
 import { IssueTypesId } from "@/shared/enums/jira-enums/issues-types-id";
 import { JiraStatusesId } from "@/shared/enums/jira-enums/jira-statuses-id";
-import { Eye } from "lucide-react";
 import { Fragment, useMemo } from "react";
-// import { ToggleEditIssue } from "../toogle-edit-issue";
-// import { useTaskCard } from "./hooks/use-task-card";
+import { ToggleEditIssue } from "../issues/toogle-edit-issue/toogle-edit-issue";
+import { Eye } from "lucide-react";
 
 export function TaskCard({ tasks, index, columnid }) {
-  // const {
-  //   onMouseDownCapture,
-  //   isActive,
-  //   activeTaskIndex,
-  //   isRunning,
-  //   TimerButton,
-  //   initialTime,
-  //   initialFields,
-  //   setInitialFields,
-  //   transitions,
-  //   explainInvalidationModal,
-  //   setExplainInvalidationModal,
-  //   currentTransition,
-  //   isLoadingTransitionsOptions,
-  //   TransitionButton,
-  //   reasonForInvalidation,
-  //   handleTransition,
-  //   SubtaskFormEditable,
-  //   ExplainInvalidation,
-  //   // generatePDF,
-  // } = useTaskCard({ tasks, index, columnid });
+  const {
+    onMouseDownCapture,
+    isActive,
+    activeTaskIndex,
+    isRunning,
+    TimerButton,
+    initialTime,
+    initialFields,
+    setInitialFields,
+    transitions,
+    explainInvalidationModal,
+    setExplainInvalidationModal,
+    currentTransition,
+    isLoadingTransitionsOptions,
+    TransitionButton,
+    reasonForInvalidation,
+    handleTransition,
+    SubtaskFormEditable,
+    ExplainInvalidation,
+    // generatePDF,
+  } = useTaskCard({ tasks, index, columnid });
 
   const isActionTask = useMemo(() => [
     IssueTypesId.IMEDIATA,
@@ -80,19 +80,16 @@ export function TaskCard({ tasks, index, columnid }) {
         </ContextMenuTrigger>
         <ContextMenuContent>
           <ContextMenuItem asChild>
-            {tasks[index].fields?.issuetype?.id === "10000" ? (
-              <></>
-              // <ToggleEditIssue
-              //   fields={initialFields}
-              //   setFields={setInitialFields}
-              //   projectKey={tasks[index].fields?.project?.key}
-              //   issueKey={tasks[index].key}
-              // >
-              //   <span className="hover:bg-muted relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50  justify-between">
-              //     Ver
-              //     <Eye className="w-3 h-3" />
-              //   </span>
-              // </ToggleEditIssue>
+            {tasks[index].fields?.issuetype?.id === IssueTypesId.EPIC ? (
+              <ToggleEditIssue
+                issueKey={tasks[index].key}
+                projectKey={tasks[index].fields?.project?.key}
+              >
+                <span className="hover:bg-muted relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50  justify-between">
+                  Ver
+                  <Eye className="w-3 h-3" />
+                </span>
+              </ToggleEditIssue>
             ) : (
               <></>
               // <SubtaskFormEditable tasks={[tasks[index]]} index={0}>
