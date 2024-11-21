@@ -22,7 +22,7 @@ interface ActionsListProps {
 const brynhildrService = new BrynhildrService()
 
 export function ActionsList({ isVisible, actions }: ActionsListProps) {
-  const actionsIssueKeys = actions.map((act) => act.key);
+  const actionsIssueKeys = actions?.map((act) => act.key);
 
   const { useGetActions } = useBrynhildrData()
   const { data: actionsFields, isLoading } = useGetActions(actionsIssueKeys)
