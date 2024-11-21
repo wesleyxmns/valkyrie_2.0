@@ -40,3 +40,16 @@ export const generateUniqueColor = (() => {
     return color;
   };
 })();
+
+export const transformCauseString = (labels: string[]): string[] => {
+  return labels.map(cause => {
+    const transformedCause = cause.replace(/ /g, "_");
+    return transformedCause;
+  });
+};
+
+export const isUserInGroup = (user, groupName) => {
+  if (!user || !user.groups || !user.groups.items) return false;
+  const validation = user.groups.items.some(group => group.name === groupName);
+  return validation
+};
