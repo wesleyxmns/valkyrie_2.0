@@ -1,4 +1,4 @@
-import { BrynhildrService } from "@/services/external/brynhildr -service/brynhildr -service";
+import { BrynhildrService } from "@/services/external/brynhildr-service/brynhildr-service";
 import { CustomFields } from "@/shared/constants/jira/jira-custom-fields";
 
 const brynhildrService = new BrynhildrService();

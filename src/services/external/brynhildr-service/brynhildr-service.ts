@@ -1,6 +1,7 @@
 import { BRYNHILDR_BASE_URL } from "@/config/env/brynhildr-base-url";
 import { UserDTO } from "@/dtos/responses/user-dto";
 import { brynhildrAPI } from "@/lib/fetch/brynhildr-api";
+import { HttpStatus } from "@/lib/fetch/constants/http-status";
 import { TaskAccessValidator } from "@/lib/validators/task-acess-validator";
 import { buildJiraAuthorization } from "@/shared/builds/build-jira-authorization";
 import { JiraCategories } from "@/shared/enums/jira-enums/jira-categories";
@@ -24,6 +25,27 @@ export class BrynhildrService {
       return issueCreated;
     } catch (error) {
       throw new Error(`Erro ao criar a tarefa: ${error instanceof Error ? error.message : error}`);
+    }
+  }
+
+  createBulkIssues = async ({ issues, userAuthorization }: { issues: Array<Record<string, any>>, userAuthorization?: string }) => {
+    const body = JSON.stringify(issues);
+    try {
+      const res = await brynhildrAPI('/issue/bulk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': userAuthorization || buildJiraAuthorization()
+        },
+        body
+      });
+
+      const tasksCreated = await res.json();
+
+      return tasksCreated;
+    } catch (error) {
+      throw new Error(`Erro ao criar a tarefas`);
     }
   }
 
@@ -275,6 +297,64 @@ export class BrynhildrService {
       return transitions;
     } catch (error) {
       throw error;
+    }
+  }
+
+  getActions = async ({ issueKeys }: { issueKeys: string[] }) => {
+    const jql = `issue in (${issueKeys.join(',')})`;
+    const fields = 'key,summary,status,subtasks'; // Especifique apenas os campos necessários
+
+    try {
+      const res = await brynhildrAPI(`/search?jql=${encodeURIComponent(jql)}&fields=${fields}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': buildJiraAuthorization()
+        }
+      });
+      const issueData = await res.json();
+      const subtasksFields = issueData.issues;
+
+      return subtasksFields
+    } catch (error) {
+      throw new Error(`Erro ao buscar as tarefas`);
+    }
+  }
+
+  getCauseAnalysis = async ({ epicName }: { epicName: string }) => {
+    const jql = `"Epic Link" = ${epicName}`;
+
+    try {
+      const result = await brynhildrAPI(`/search?jql=${jql}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': buildJiraAuthorization()
+        }
+      })
+      const data = await result.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  updateIssue = async ({ issueKey, fields, userAuthorization }:
+    { issueKey: string, fields: Record<string, any>, userAuthorization?: string }) => {
+    try {
+      const body = JSON.stringify({ args: { ...fields } })
+      await brynhildrAPI(`/issue/${issueKey}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': userAuthorization || '',
+        },
+        body
+      })
+      return { content: null, status: HttpStatus.NO_CONTENT }
+    } catch (error) {
+      return { content: error, status: HttpStatus.BAD_REQUEST }
     }
   }
 }
