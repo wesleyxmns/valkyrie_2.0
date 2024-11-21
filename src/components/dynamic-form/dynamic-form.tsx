@@ -23,9 +23,9 @@ export const DynamicForm = ({ key, fieldsComponents }: DynamicFormProps) => {
     CustomFields.ITEM_RNC.id,
     "comments",
     'attachments',
-    'subtasks',
-    'subtaskTable',
-    'subtasksList',
+    'actions',
+    'actionsTable',
+    'actionsList',
   ]
 
   return (

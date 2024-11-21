@@ -27,7 +27,7 @@ export const WFTQ = [
     CustomFields.TIPO_FRETE.id,
     CustomFields.REG_PED_GARANTIA.id,
     "attachments",
-    "subtasks",
-    "subtaskTable",
-    "subtasksList",
+    "actions",
+    "actionsTable",
+    "actionsList",
 ]
