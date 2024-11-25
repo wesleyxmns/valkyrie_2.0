@@ -33,7 +33,7 @@ export function useCreateTaskByReport() {
 
             if (response.status === HttpStatus.CREATED) {
                 // FUNÇÃO QUE CONSTRÓI A ESTRUTURA DAS SUBTAREFAS
-                const _issues = buildIssueStructure({ parentKey: result.key, subtasks: fields.subtasks })
+                const _issues = buildIssueStructure({ parentKey: result.key, actions: fields.subtasks })
                 // ENVIO DOS ATTACHMENTS
                 // if (fields.attachments?.length > 0) {
                 //     useSendAttachments(result.key, fields.attachments)

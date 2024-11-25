@@ -91,7 +91,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function signOut() {
     destroyCookie(undefined, `${COOKIES.AUTH_TOKEN}`);
     setUser(null);
-    router.replace(ROUTES_VARIABLES.AUTH);
+    router.push(ROUTES_VARIABLES.AUTH);
   }
 
   return (

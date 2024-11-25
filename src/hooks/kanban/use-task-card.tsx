@@ -1,49 +1,44 @@
 'use client'
 import { searchCardById } from "@/components/modules/dashboard/kanban/functions/search=card-by-id";
-import { Button } from "@/components/ui/button";
 import { ContextMenuItem } from "@/components/ui/context-menu";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { brynhildrAPI } from "@/lib/fetch/brynhildr-api";
-import { buildJiraAuthorization } from "@/shared/builds/build-jira-authorization";
+import { HttpStatus } from "@/lib/fetch/constants/http-status";
+import { BrynhildrService } from "@/services/external/brynhildr-service/brynhildr-service";
 import { CustomFields } from "@/shared/constants/jira/jira-custom-fields";
 import { IssueTypesId } from "@/shared/enums/jira-enums/issues-types-id";
-import { ActionsTransitionsId } from "@/shared/enums/rnc-enums/rnc-actions-transitions-id";
 import { RNCEpicTransitionsId } from "@/shared/enums/rnc-enums/rnc-epic-transitions-id";
 import { TransitionProps } from "@/shared/types/transitions";
 import { MoveRight } from "lucide-react";
 import { parseCookies } from "nookies";
-import React, { forwardRef, Fragment, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
-import { useActions } from "../actions/use-actions";
 import { useAuth } from "../auth/use-auth";
-import { useKanban } from "./use-kanban";
+import { useBrynhildrData } from "../brynhildr-data/brynhildr-data";
 import { useWorklog } from "../worklog/use-worklog";
-import { BrynhildrService } from "@/services/external/brynhildr-service/brynhildr-service";
-
-type SubtaskFormEditableProps = {
-  children: React.ReactNode;
-  tasks: any[];
-  index: number;
-};
+import { actionsTransitions } from "./triggers/actions/actions-transitions";
+import { epicTransitions } from "./triggers/epic/epic-transitions";
+import { useKanban } from "./use-kanban";
 
 const brynhildrService = new BrynhildrService();
 
 export function useTaskCard({ tasks, index, columnid }) {
 
-  const { getTransitions } = brynhildrService;
+  const { getIssue, sendComment, doTransition } = brynhildrService;
+
+  const epicKey = tasks[index].key;
 
   const { '@valkyrie:auth-token': token } = parseCookies();
   const { user } = useAuth();
   const userAuthorization = `Basic ${token}`;
+
   const { columns, updateColumns } = useKanban();
   const { activeTaskIndex, isRunning, TimerButton } = useWorklog();
 
-  const isActive = 0 === index;
+  const { useGetTransitions } = useBrynhildrData();
+  const { data: transitions } = useGetTransitions(epicKey, userAuthorization)
 
+  const isActive = 0 === index;
   const initialTime = tasks[index].fields?.timeoriginalestimate;
-  const [initialFields, setInitialFields] = useState(tasks[index].fields);
-  const [transitions, setTransitions] = useState<TransitionProps[]>([]);
+
   const [explainInvalidationModal, setExplainInvalidationModal] = useState(false);
   const [currentTransition, setCurrentTransition] = useState<TransitionProps | null>(null);
   const [isLoadingTransitionsOptions, setIsLoadingTransitionsOptions] = useState<boolean>(false);
@@ -56,29 +51,25 @@ export function useTaskCard({ tasks, index, columnid }) {
     (subtask: Record<string, any>) => subtask.fields.issuetype.id === IssueTypesId.MELHORIA
   );
 
+  const { task: foundTask, columnId } = searchCardById({ columns, id: columnid as string });
+
   const handleTransition = useCallback(async (transition: TransitionProps) => {
-    const { task: foundTask, columnId } = searchCardById({ columns, id: columnid as string });
     if (!foundTask || !columnId) return;
 
     const isSubtask = foundTask.fields?.issuetype?.subtask === true;
-    const transitionHandler = isSubtask ? ActionsTransitionsId : RNCEpicTransitionsId;
+    const transitionHandler = isSubtask ? actionsTransitions : epicTransitions;
 
     try {
-      // const res = await transitionHandler({ epicKey: foundTask.key, transitionId: transition.id, user: user!, userAuthorization });
-
-      // if (res.status !== HttpStatus.OK) {
-      //   throw new Error(`Erro ao realizar transição${isSubtask ? ' da subtarefa' : ''}`);
-      // }
+      const res = await transitionHandler({ epicKey: foundTask.key, transitionId: transition.id, user: user!, userAuthorization });
+      if (res.status !== HttpStatus.OK) {
+        throw new Error(`Erro ao realizar transição${isSubtask ? ' da subtarefa' : ''}`);
+      }
 
       // if (!isSubtask && user) {
       //   await sendEmailByTransition({ issueKey: tasks[index].key, user, transitionId: transition.id, fields: tasks[index].fields });
       // }
 
-      const getNewTask = await brynhildrAPI(`/issue/${foundTask.key}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'Authorization': buildJiraAuthorization() }
-      });
-      const newTask = await getNewTask.json();
+      const newTask = await getIssue(foundTask.key, userAuthorization);
 
       updateColumns((prevColumns) =>
         prevColumns.map((column: any) => {
@@ -116,7 +107,7 @@ export function useTaskCard({ tasks, index, columnid }) {
   };
 
   const handleTransitionClick = (transition: TransitionProps) => {
-    // if (isRunning && [IssueTypesId.IMEDIATA, IssueTypesId.CORRETIVA, IssueTypesId.MELHORIA].includes(tasks[index].fields?.issuetype?.id)) return;
+    if (isRunning && [IssueTypesId.IMEDIATA, IssueTypesId.CORRETIVA, IssueTypesId.MELHORIA].includes(tasks[index].fields?.issuetype?.id)) return;
 
     const warnings = validateTransition(transition);
     if (warnings.length > 0) {
@@ -131,32 +122,27 @@ export function useTaskCard({ tasks, index, columnid }) {
 
   const TransitionButton = ({ transition }: { transition: TransitionProps }) => (
     <ContextMenuItem
-    // className={`flex gap-2 items-center justify-between 
-    //   ${isRunning && [IssueTypesId.IMEDIATA, IssueTypesId.CORRETIVA, IssueTypesId.MELHORIA].includes(tasks[index].fields?.issuetype?.id) ? 'opacity-50 cursor-not-allowed' : ''}`}
-    // onClick={() => handleTransitionClick(transition)}
+      className={`flex gap-2 items-center justify-between 
+      ${isRunning &&
+          [IssueTypesId.IMEDIATA, IssueTypesId.CORRETIVA, IssueTypesId.MELHORIA].includes(tasks[index].fields?.issuetype?.id) ?
+          'opacity-50 cursor-not-allowed' :
+          ''}`
+      }
+      onClick={() => handleTransitionClick(transition)}
     >
       {transition.name}
       <MoveRight className="w-3 h-3" />
     </ContextMenuItem>
   );
 
-  const onMouseDownCapture = async () => {
+  const onMouseDownCapture = () => {
     setIsLoadingTransitionsOptions(true);
-    const _transitions = await getTransitions(tasks[index].key);
-    setTransitions(_transitions);
     setIsLoadingTransitionsOptions(false);
   };
 
   const reasonForInvalidation = async (reason: string) => {
     const _reason = reason.trim();
-    const res = await brynhildrAPI(`/comment/${tasks[index].key}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': userAuthorization
-      },
-      body: JSON.stringify({ body: _reason })
-    });
+    const res = await sendComment(tasks[index].key, _reason, userAuthorization);
     return res;
   };
 
@@ -193,87 +179,24 @@ export function useTaskCard({ tasks, index, columnid }) {
   //   }
   // }
 
-  const ExplainInvalidation = ({ showModal, onClose, onConfirm }: { showModal: boolean, onClose: () => void, onConfirm: (reason: string) => void }) => {
-    const [reason, setReason] = useState<string>('');
-    return (
-      <Dialog open={showModal} onOpenChange={onClose}>
-        <DialogContent className="w-auto h-auto">
-          <DialogHeader>
-            <DialogTitle>Invalidar relatório</DialogTitle>
-            <DialogDescription>
-              Descreva o motivo pelo o qual você está invalidando esse relatório.
-            </DialogDescription>
-          </DialogHeader>
-          <Textarea
-            className="resize-none"
-            rows={5}
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            placeholder={`Digite o motivo da invalidação...`}
-          />
-          <div className="flex justify-end">
-            <Button onClick={() => onConfirm(reason)}>
-              Invalidar
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    );
-  };
-
-  const SubtaskFormEditable = forwardRef<HTMLDivElement, SubtaskFormEditableProps>(({ children, tasks, index }, ref) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const toggleForm = () => setIsOpen(!isOpen);
-    const { actionsField, getActionInformation } = useActions();
-    // const { data } = useTaskStore();
-    // const currentAction = data.find((task) => task.key === tasks[index].key);
-
-    // const handleSubtaskClick = async (subtaskKey: string) => {
-    //   if (!currentAction?.key) return;
-    //   await getActionInformation(subtaskKey);
-    //   toggleForm();
-    // };
-
-    // const { ActionsFormEditable } = createSubtask({
-    //   isOpen,
-    //   setIsOpen,
-    //   epicFields: actionsField.fields,
-    //   projectKey: actionsField.fields?.project?.key,
-    //   issueKey: actionsField.key,
-    // });
-
-    return (
-      <Fragment>
-        {/* {React.isValidElement(children) && React.cloneElement(children as React.ReactElement<any>, {
-          onClick: () => currentAction?.key && handleSubtaskClick(currentAction.key),
-          ref: ref
-        })}
-        {isOpen && <ActionsFormEditable showComponent={isOpen} />} */}
-      </Fragment>
-    );
-  });
-
   return {
+    userAuthorization,
     activeTaskIndex,
     isRunning,
     TimerButton,
     isActive,
     initialTime,
-    initialFields,
-    setInitialFields,
     transitions,
-    setTransitions,
+    doTransition,
     explainInvalidationModal,
     setExplainInvalidationModal,
     currentTransition,
     setCurrentTransition,
     handleTransition,
-    // generatePDF,
     TransitionButton,
     onMouseDownCapture,
     isLoadingTransitionsOptions,
     reasonForInvalidation,
-    ExplainInvalidation,
-    SubtaskFormEditable
+    // generatePDF,
   };
 }

@@ -26,6 +26,7 @@ import { Fragment, useEffect, useMemo, useState } from "react";
 import { Controller } from "react-hook-form";
 import ImediateIcon from '../../../../../../public/svg/immediateaction.svg';
 import ImprovementAction from '../../../../../../public/svg/improvementaction.svg';
+import { CreateCauseAnalysis } from '../cause-analysis/create-cause-analysis';
 import { EffectivenessAnalysis } from '../components/effectiveness-analysis';
 import { FollowUp } from '../components/follow-up';
 
@@ -41,13 +42,15 @@ export function ActionsCreateForm({ epicKey, projectKey }: ActionsCreateFormProp
   const { '@valkyrie:auth-token': token } = parseCookies();
   const userAuth = `Basic ${token}`;
 
-  const { form, onHandleAddActions, enabled, setEnabled } = useActions();
+  const { form, onHandleAddActions } = useActions();
 
   const { useGetIssue } = useBrynhildrData();
   const { data: issue } = useGetIssue(epicKey, userAuth);
 
   const [attachs, setAttachs] = useState<Array<Record<string, any>>>([]);
   const [formState, setFormState] = useState({});
+
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const groups = user?.getGroups().items.map((group: any) => group.name);
   const isQualityMember = groups?.find((group) => group.includes(jiraGroups.quality))
@@ -57,7 +60,7 @@ export function ActionsCreateForm({ epicKey, projectKey }: ActionsCreateFormProp
   });
 
   useMemo(() => {
-    if (form.getValues('reporter') === undefined && !enabled) {
+    if (form.getValues('reporter') === undefined && !isOpen) {
       form.setValue('reporter', user && user?.getName());
     }
 
@@ -99,9 +102,9 @@ export function ActionsCreateForm({ epicKey, projectKey }: ActionsCreateFormProp
       )}
       <div className="flex flex-col p-1">
         <div className='flex gap-1 items-center' >
-          <Label>Criar Ações</Label>
+          <Label>Ações</Label>
           <div>
-            <Dialog open={enabled} onOpenChange={setEnabled}>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
               <DialogTrigger asChild>
                 <SquarePlus size={18} className="cursor-pointer" />
               </DialogTrigger>
@@ -171,7 +174,7 @@ export function ActionsCreateForm({ epicKey, projectKey }: ActionsCreateFormProp
             </Dialog>
           </div>
           <div className="space-y-3">
-            {/* <CreateCauseAnalysis fields={fields} projectKey={projectKey} issueKey={issueKey as string} /> */}
+            <CreateCauseAnalysis fields={issue?.fields} projectKey={projectKey} issueKey={epicKey} />
           </div>
         </div>
       </div>

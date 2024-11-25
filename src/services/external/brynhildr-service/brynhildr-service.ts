@@ -4,6 +4,7 @@ import { brynhildrAPI } from "@/lib/fetch/brynhildr-api";
 import { HttpStatus } from "@/lib/fetch/constants/http-status";
 import { TaskAccessValidator } from "@/lib/validators/task-acess-validator";
 import { buildJiraAuthorization } from "@/shared/builds/build-jira-authorization";
+import { IssueLinkType } from "@/shared/enums/jira-enums/issue-link-types";
 import { JiraCategories } from "@/shared/enums/jira-enums/jira-categories";
 
 export class BrynhildrService {
@@ -49,13 +50,14 @@ export class BrynhildrService {
     }
   }
 
-  sendComment = async (issueKey: string, comment: string, token: string) => {
+  sendComment = async (issueKey: string, comment: string, userAuthorization: string) => {
     try {
       const res = await brynhildrAPI(`/comment/${issueKey}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Basic ${token}`,
+          'Accept': 'application/json',
+          'Authorization': userAuthorization,
         },
         body: JSON.stringify({ body: comment })
       });
@@ -333,6 +335,30 @@ export class BrynhildrService {
         }
       })
       const data = await result.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  createIssueLink = async ({ type, inwardKey, outwardKey, userAuthorization }:
+    {
+      type: IssueLinkType,
+      inwardKey: string,
+      outwardKey: string,
+      userAuthorization?: string
+    }) => {
+    try {
+      const body = JSON.stringify({ type, inwardKey, outwardKey })
+      const res = await brynhildrAPI('/issuelink', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': userAuthorization || buildJiraAuthorization(),
+        },
+        body
+      })
+      const data = await res.json();
       return data;
     } catch (error) {
       throw error;

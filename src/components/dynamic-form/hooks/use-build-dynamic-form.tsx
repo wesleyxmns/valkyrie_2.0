@@ -343,7 +343,7 @@ export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: 
 
     "actions": <ActionsCreateForm epicKey={epicKey as string} projectKey={projectKey} />,
     "actionsTable": <ActionsTable />,
-    "actionsList": <ActionsList actions={fields.subtasks} isVisible={fields.issuetype?.id === IssueTypesId.EPIC && fields.subtasks?.length > 0} />,
+    "actionsList": <ActionsList epicFields={fields} actions={fields.subtasks} isVisible={fields.issuetype?.id === IssueTypesId.EPIC && fields.subtasks?.length > 0} />,
 
     [CustomFields.PRAZO.id]:
       <InsertDeadline
