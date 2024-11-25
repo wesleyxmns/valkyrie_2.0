@@ -7,8 +7,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/auth/use-auth";
-import { useBrynhildrData } from "@/hooks/brynhildr-data/brynhildr-data";
 import { useComments } from "@/hooks/comments/use-comments";
+import { BrynhildrService } from "@/services/external/brynhildr-service/brynhildr-service";
 import { avoidDefaultDomBehavior } from "@/shared/functions/avoidDefaultDomBehavior";
 import { getInitials } from "@/shared/functions/get-initials";
 import { formatDate } from 'date-fns';
@@ -44,8 +44,10 @@ interface CommentsDialogProps {
   issueKey?: string;
 }
 
+const brynhildrService = new BrynhildrService();
+
 export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
-  // const { useGetCommentsAndAttachs, useSendAttachments, useSendComment } = useBrynhildrData()
+  const { sendComment, sendAttachments, getCommentsAndAttachs } = brynhildrService;
 
   const { user } = useAuth();
   const { '@valkyrie:auth-token': token } = parseCookies();
@@ -58,11 +60,11 @@ export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // const sendComment = async () => {
-  //   if (localComment.trim() !== '') {
-  //     useSendComment(issueKey as string, localComment, token);
-  //   }
-  // };
+  const handlesendComment = async () => {
+    if (localComment.trim() !== '') {
+      sendComment(issueKey as string, localComment, token);
+    }
+  };
 
   const resetForm = () => {
     setLocalComment('');
@@ -80,13 +82,13 @@ export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
 
       if (issueKey) {
         if (attachments.length > 0) {
-          // useSendAttachments(issueKey, attachments);
+          sendAttachments({ issueKey: issueKey, files: attachments });
         }
 
-        // await sendComment();
+        await handlesendComment();
         toast.success('Comentário enviado com sucesso!');
         resetForm();
-        // getCommentsAndAttachs();
+        handleGetCommentsAndAttachs();
       }
     } catch (error) {
       toast.error('Erro ao enviar comentário. Por favor, tente novamente.');
@@ -167,16 +169,16 @@ export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
     setComment(comment.replace(attachmentLink, '').trim());
   };
 
-  // async function getCommentsAndAttachs() {
-  //   if (!issueKey) return;
-  //   const { data: fields } = useGetCommentsAndAttachs(issueKey);
-  //   setAttachs(fields.attachment);
-  //   setComments(fields.comment.comments);
-  // }
+  async function handleGetCommentsAndAttachs() {
+    if (!issueKey) return;
+    const response = await getCommentsAndAttachs(issueKey);
+    setAttachs(response.attachment);
+    setComments(response.comment.comments);
+  }
 
-  // useEffect(() => {
-  //   getCommentsAndAttachs();
-  // }, [])
+  useEffect(() => {
+    handleGetCommentsAndAttachs();
+  }, [])
 
   return (
     <Fragment>
