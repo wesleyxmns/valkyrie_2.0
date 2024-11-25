@@ -3,26 +3,26 @@ import { IssueTypesId } from "../enums/jira-enums/issues-types-id";
 import { ProjectsId } from "../enums/jira-enums/projects-id";
 
 interface BuildStructureProps {
-  subtasks: Record<string, any>[];
+  actions: Record<string, any>[];
   parentKey: string;
 }
 
-export const buildIssueStructure = ({ parentKey, subtasks }: BuildStructureProps) => {
-  return subtasks.map((subtask) => {
+export const buildIssueStructure = ({ parentKey, actions }: BuildStructureProps) => {
+  return actions.map((action) => {
     const issue: Record<string, any> = {
-      ...subtask,
+      ...action,
       projectId: ProjectsId.WFTQ,
       args: {
         parent: { key: parentKey },
-        duedate: subtask.duedate,
-        timetracking: subtask.timetracking,
-        customfield_12304: subtask.customfield_12304, // SUBSETOR FABRICA
+        duedate: action.duedate,
+        timetracking: action.timetracking,
+        customfield_12304: action.customfield_12304, // SUBSETOR FABRICA
       }
     };
 
-    if (subtask.issueTypeId === IssueTypesId.CORRETIVA) {
-      issue.args.labels = transformCauseString(subtask.labels);
-      issue.args[CustomFields.SETOR_ORIGEM.id] = subtask.customfield_11303;
+    if (action.issueTypeId === IssueTypesId.CORRETIVA) {
+      issue.args.labels = transformCauseString(action.labels);
+      issue.args[CustomFields.SETOR_ORIGEM.id] = action.customfield_11303;
     }
 
     return issue;
