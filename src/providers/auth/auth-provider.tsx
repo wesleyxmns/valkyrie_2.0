@@ -1,6 +1,6 @@
 'use client'
 import { UserDTO } from "@/dtos/responses/user-dto";
-import { jiraAPI } from "@/lib/fetch/jira-api";
+import { brynhildrAPI } from "@/lib/fetch/brynhildr-api";
 import { AuthProviderProps, UserAuthentication } from "@/shared/interfaces/auth";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -18,7 +18,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isAuthenticated: boolean = !!user;
 
   const fetchUserData = useCallback(async (token: string, username: string) => {
-    const currentUserInformations = await jiraAPI(`/user/${username}`, {
+    const currentUserInformations = await brynhildrAPI(`/user/${username}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const { '@valkyrie:auth-token': token } = parseCookies();
     if (token) {
       try {
-        const result = await jiraAPI('/auth', {
+        const result = await brynhildrAPI('/auth', {
           method: 'GET',
           headers: { 'Authorization': `Basic ${token}` }
         });
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
 
     try {
-      const logged = await jiraAPI("/auth", {
+      const logged = await brynhildrAPI("/auth", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   async function signOut() {
     destroyCookie(undefined, `${COOKIES.AUTH_TOKEN}`);
     setUser(null);
-    router.replace(ROUTES_VARIABLES.AUTH);
+    router.push(ROUTES_VARIABLES.AUTH);
   }
 
   return (

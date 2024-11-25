@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ROUTES_VARIABLES } from "@/config/constants/route-variables";
 import { HttpStatus } from "@/lib/fetch/constants/http-status";
-import { jiraAPI } from "@/lib/fetch/jira-api";
+import { brynhildrAPI } from "@/lib/fetch/brynhildr-api";
 import { buildJiraAuthorization } from "@/shared/builds/build-jira-authorization";
 import { useRouter } from "next/navigation";
 import { parseCookies, destroyCookie } from "nookies";
@@ -47,7 +47,7 @@ export default function ResetPasswordForm() {
             return toast.error('As senhas não conferem')
         }
 
-        const result = await jiraAPI(BASE_URL, {
+        const result = await brynhildrAPI(BASE_URL, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

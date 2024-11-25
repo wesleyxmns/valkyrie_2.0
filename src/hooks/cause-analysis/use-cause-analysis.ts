@@ -1,7 +1,7 @@
 import { CauseAnalysisContext } from "@/contexts/cause-analysis/cause-analysis";
 import { useContext } from "react";
 
-export const useCauseAnalysis = () => {
+export const useCauseAnalysisContext = () => {
   const context = useContext(CauseAnalysisContext);
   if (!context) {
     throw new Error('usecauseAnalysisContext must be used within a causeAnalysisProvider');

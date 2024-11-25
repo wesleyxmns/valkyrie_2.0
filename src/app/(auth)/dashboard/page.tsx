@@ -1,5 +1,5 @@
 import { BuildPage } from "@/components/common/build-page";
-import { DashboardCardsList } from "@/app/(auth)/dashboard/_components/dashboards-cards";
+import { DashboardCardsList } from "@/components/modules/dashboard/dashboards-cards";
 import { LayoutDashboard } from "lucide-react";
 
 export default function Dashboard() {

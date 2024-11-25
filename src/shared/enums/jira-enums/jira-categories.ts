@@ -1,0 +1,13 @@
+export enum JiraCategories {
+  NON_COMPLIANCE = 'RNC',
+  SOFTWARE = 'SOFTWARE',
+  QUALIDADE = 'QUALIDADE',
+  DTD = 'DTD',
+  DTI = 'DTI',
+  DTM = 'DTM',
+  DTE = 'DTE',
+  CLIENTES = 'CLIENTES',
+  SAC = 'SAC',
+  FABRICA = 'ATENDIMENTO FABRICA',
+  QUALITY_REPORT = 'WFTQ',
+}

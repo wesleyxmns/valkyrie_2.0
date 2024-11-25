@@ -1,35 +1,49 @@
 'use client'
 import { ActionsContext } from "@/contexts/actions/actions-context";
-import { jiraAPI } from "@/lib/fetch/jira-api";
+import { brynhildrAPI } from "@/lib/fetch/brynhildr-api";
 import { buildJiraAuthorization } from "@/shared/builds/build-jira-authorization";
-import { CustomFields } from "@/shared/constants/jira/jira-custom-fields";
-import { Action, ActionsProviderProps, EffectivenessAnalysis, FollowUp } from "@/shared/interfaces/actions";
+import { Action, ActionsProviderProps } from "@/shared/interfaces/actions";
+import { EffectivenessAnalysis } from "@/shared/types/effectiveness-analysis";
+import { FollowUp } from "@/shared/types/follow-up";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export function ActionsProvider({ children }: ActionsProviderProps) {
   const form = useForm();
+
+  const [enabled, setEnabled] = useState<boolean>(false);
+
   const [actions, setActions] = useState<Action[]>([]);
   const [actionsField, setActionsField] = useState<Record<string, any>>({});
   const [followUp, setFollowUp] = useState<FollowUp>({} as FollowUp);
   const [effectivenessAnalysis, setEffectivenessAnalysis] = useState<EffectivenessAnalysis>({} as EffectivenessAnalysis);
 
   const buildStructureSubTask = (data: Record<string, any>) => {
-    const newSubtask: Action = {
-      issueTypeId: data.issueTypeId,
-      summary: data.summary,
-      reporter: data.reporter,
-      assignee: data.assignee,
-      description: data.description,
-      duedate: data.duedate,
-      customfield_12304: data[CustomFields.SUBSETOR_FABRICA.id], // SUBSETOR FABRICA
-      timetracking: {
-        originalEstimate: data.duration,
-        remainingEstimate: data.duration,
+
+    const filteredSubtask = Object.fromEntries(
+      Object.entries(data).filter(([_, value]) => value !== '' && value !== undefined)
+    );
+
+    const validateFields = (data: Record<string, any>) => {
+      const requiredFields = ['issueTypeId', 'summary', 'reporter', 'assignee', 'duedate'];
+      for (const field of requiredFields) {
+        if (!data[field]) {
+          return false;
+        }
       }
+      return true;
     };
 
-    setActions([...actions, newSubtask]);
+    const isValid = validateFields(filteredSubtask);
+
+    if (!isValid) {
+      toast.warning('Preencha todos os campos obrigatórios para adicionar a Ação.');
+      return false;
+    }
+
+    setActions([...actions, filteredSubtask as Action]);
+    setEnabled(false);
     form.reset();
   }
 
@@ -37,15 +51,15 @@ export function ActionsProvider({ children }: ActionsProviderProps) {
     setActions([])
   }
 
-  function handleSubmitAction(event: React.FormEvent<HTMLFormElement>) {
+  function onHandleAddActions(event: React.FormEvent<HTMLFormElement>): boolean {
     event.preventDefault();
     event.stopPropagation();
-    form.handleSubmit(buildStructureSubTask)(event);
-    resetActions();
+    const result = form.handleSubmit(buildStructureSubTask)(event);
+    return !!result;
   }
 
   const getActionInformation = async (issueKey: string) => {
-    const response = await jiraAPI(`/issue/${issueKey}`, {
+    const response = await brynhildrAPI(`/issue/${issueKey}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json', 'Authorization': buildJiraAuthorization() }
     })
@@ -58,6 +72,8 @@ export function ActionsProvider({ children }: ActionsProviderProps) {
   return (
     <ActionsContext.Provider value={{
       form,
+      enabled,
+      setEnabled,
       actions,
       actionsField,
       followUp,
@@ -65,7 +81,7 @@ export function ActionsProvider({ children }: ActionsProviderProps) {
       setActions,
       setEffectivenessAnalysis,
       setFollowUp,
-      handleSubmitAction,
+      onHandleAddActions,
       resetActions,
       setActionsField,
       getActionInformation
