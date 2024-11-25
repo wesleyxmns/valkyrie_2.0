@@ -35,7 +35,7 @@ import EpicIcon from '../../../../../../public/svg/epic.svg';
 import { EpicInformations } from "../components/epic-informations";
 
 interface ActionContentFormProps {
-  epicName: string;
+  epicName?: string;
   isVisible: boolean;
 }
 
@@ -47,12 +47,12 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
   const { '@valkyrie:auth-token': token } = parseCookies();
   const userAuthorization = `Basic ${token}`;
 
-  const { form, actionsField, setEnabled, getActionInformation } = useActions();
-  const { updateIssue, sendAttachments } = brynhildrService;
+  const { form, actionsField, setEnabled } = useActions();
+  const { updateIssue, sendAttachments, getIssue } = brynhildrService;
   const { handleSubmit, control, setValue, register } = form;
 
   const { useGetCauseAnalysis } = useBrynhildrData()
-  const { data: causeAnalysis } = useGetCauseAnalysis(epicName)
+  const { data: causeAnalysis } = useGetCauseAnalysis(epicName as string);
 
   const regexPattern = /\d+° Porque:.*$/gm;
   const usersPCP = isUserInGroup(user, jiraGroups.pcp)
@@ -102,33 +102,33 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Badge variant="secondary" >
-              {actionsField.key}
+              {actionsField?.key}
             </Badge>
             <Badge
               variant="outline"
               className={
-                actionsField.fields.status.name === 'In Progress'
+                actionsField?.fields?.status?.name === 'In Progress'
                   ? 'bg-blue-600 text-white' // Dark blue
-                  : actionsField.fields.status.name === 'Under Review'
+                  : actionsField?.fields?.status?.name === 'Under Review'
                     ? 'bg-blue-600 text-white' // Navy blue
                     : ''
               }
             >
-              {actionsField.fields.status.name}
+              {actionsField?.fields?.status?.name}
             </Badge>
             <Badge
               variant="outline"
               className={
-                actionsField.fields.issuetype.name === 'Ação Imediata'
+                actionsField?.fields?.issuetype?.name === 'Ação Imediata'
                   ? 'bg-ImediateAction text-white'
-                  : actionsField.fields.issuetype.name === 'Ação Corretiva'
+                  : actionsField?.fields?.issuetype?.name === 'Ação Corretiva'
                     ? 'bg-CorrectiveAction text-white'
-                    : actionsField.fields.issuetype.name === 'Ação de Melhoria'
+                    : actionsField?.fields?.issuetype?.name === 'Ação de Melhoria'
                       ? 'bg-ImprovementAction text-white'
                       : ''
               }
             >
-              {actionsField.fields.issuetype.name}
+              {actionsField?.fields?.issuetype?.name}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
@@ -149,19 +149,19 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
             control={control}
             onBlur={(e) => setValue('summary', e.target.value)}
             disabled={!isEditing}
-            defaultValue={actionsField.fields.summary}
+            defaultValue={actionsField?.fields?.summary}
           />
         </FloatingLabelInput>
         <div className="flex space-x-2 items-center" >
-          <SelectUsers disabled showComponent id="Solicitante" label="Solicitante" form={form} name="reporter" value={actionsField.fields.reporter.displayName} />
-          <SelectUsers disabled={!isEditing} showComponent id="Responsável" label="Responsável" form={form} name="assignee" value={actionsField.fields.assignee.displayName} />
+          <SelectUsers disabled showComponent id="Solicitante" label="Solicitante" form={form} name="reporter" value={actionsField?.fields?.reporter?.displayName} />
+          <SelectUsers disabled={!isEditing} showComponent id="Responsável" label="Responsável" form={form} name="assignee" value={actionsField?.fields?.assignee?.displayName} />
           <FloatingLabelInput label="Data de entrega" id="Data de entrega" >
             <div className="flex items-center gap-2" >
               <Controller name='duedate' control={form.control} render={({ field }) => {
                 return (
                   <DateTimePicker
                     {...field}
-                    value={actionsField.fields.duedate}
+                    value={actionsField?.fields?.duedate}
                     onChange={(newDate, newDuration) => {
                       form.setValue('duedate', newDate)
                       form.setValue('timetracking', {
@@ -174,11 +174,11 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
                   />
                 )
               }} />
-              {actionsField.fields?.parent?.key &&
+              {actionsField?.fields?.parent?.key &&
                 <Fragment>
                   <Dialog open={modalEpicInformations} onOpenChange={setModalEpicInformations} >
                     <DialogContent onPointerDownOutside={avoidDefaultDomBehavior} onInteractOutside={avoidDefaultDomBehavior} >
-                      <EpicInformations epicKey={actionsField.fields?.parent?.key} />
+                      <EpicInformations epicKey={actionsField?.fields?.parent?.key} />
                     </DialogContent>
                   </Dialog>
                   <ShinyButton
@@ -195,13 +195,13 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
                   </ShinyButton>
                 </Fragment>
               }
-              {usersPCP && actionsField.fields.assignee.displayName === jiraGroups.pcp.replace(" - ", " ").toUpperCase() &&
+              {usersPCP && actionsField?.fields?.assignee?.displayName === jiraGroups.pcp.replace(" - ", " ").toUpperCase() &&
                 <InsertDeadline
                   disabled={!isEditing}
                   id={CustomFields.PRAZO.name} label={CustomFields.PRAZO.name}
                   form={form} name={CustomFields.PRAZO.id}
-                  value={actionsField.fields[CustomFields.PRAZO.id]}
-                  required={actionsField.fields.status?.id === JiraStatusesId.PCP}
+                  value={actionsField?.fields[CustomFields.PRAZO.id]}
+                  required={actionsField?.fields?.status?.id === JiraStatusesId.PCP}
                   showComponent
                 />
               }
@@ -211,7 +211,7 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
         <div className="flex items-center space-x-2" >
           <FloatingLabelInput id="Descrição" label="Descrição">
             <Controller
-              defaultValue={actionsField.fields.description}
+              defaultValue={actionsField?.fields?.description}
               name="description"
               control={control}
               render={({ field }) => (
@@ -234,13 +234,13 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
           </FloatingLabelInput>
         </div>
         <FileUpload disabled={!isEditing} form={form} name="attachments" />
-        <Comments showComponent issueKey={actionsField.key} />
-        <AttachmentThumbnails attachments={actionsField.fields.attachment} />
+        <Comments showComponent issueKey={actionsField?.key} />
+        <AttachmentThumbnails attachments={actionsField?.fields?.attachment} />
         {actionsField?.issueTypeId === 'Ação Corretiva' && (
           <div className="flex items-center gap-1" >
             <span className="text-sm font-semibold">Análise de Causa vinculada: </span>
             <Badge
-              onClick={() => getActionInformation(causeAnalysis.key)}
+              onClick={() => getIssue(causeAnalysis.key)}
               className="cursor-pointer"
               variant="secondary">
               {causeAnalysis?.fields?.summary}
