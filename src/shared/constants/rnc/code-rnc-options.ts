@@ -1,4 +1,4 @@
-const CodeRncOptions = [
+export const CodeRncOptions = [
   { label: "Divergência de Estoque - DET", value: "DET" },
   { label: "Erro na Separação de Material - ESM", value: "ESM" },
   { label: "Falta de Material de Consumo - FMC", value: "FMC" },
