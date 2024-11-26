@@ -13,7 +13,7 @@ export const TextArea = ({ name, register, defaultValue, onBlur, disabled }:
     return (
         <Textarea
             {...register(name)}
-            rows={10}
+            rows={5}
             defaultValue={defaultValue || ''}
             onBlur={onBlur}
             disabled={disabled}

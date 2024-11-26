@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(request: NextRequest) {
   try {
     const url = request.nextUrl.searchParams.get('url');
-    console.log('URL recebida:', url);
 
     if (!url) {
       return NextResponse.json({ error: 'URL não fornecida' }, { status: 400 });

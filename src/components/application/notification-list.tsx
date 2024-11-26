@@ -106,6 +106,7 @@ export const NotificationList: React.FC = () => {
         //   projectKey={selectedTask?.fields?.project?.key}
         // >
         <div
+          key={notification.id}
           className="flex items-center p-2 hover:bg-secondary/80 rounded-lg relative group cursor-pointer"
         // onClick={() => handleNotificationClick(notification)}
         >

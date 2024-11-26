@@ -28,9 +28,9 @@ export function ChooseTheme() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>Light</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>Dark</DropdownMenuItem>
+      <DropdownMenuContent align="end" className={theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"}>
+        <DropdownMenuItem onClick={() => setTheme("light")} className="hover:bg-gray-400">Light</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")} className="hover:bg-gray-600">Dark</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
