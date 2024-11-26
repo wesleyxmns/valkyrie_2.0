@@ -13,10 +13,10 @@ import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { useAuth } from "../auth/use-auth";
 import { useBrynhildrData } from "../brynhildr-data/brynhildr-data";
-import { useWorklog } from "../worklog/use-worklog";
 import { actionsTransitions } from "./triggers/actions/actions-transitions";
 import { epicTransitions } from "./triggers/epic/epic-transitions";
 import { useKanban } from "./use-kanban";
+import { useWorklog } from "../worklog/use-worklog";
 
 const brynhildrService = new BrynhildrService();
 
