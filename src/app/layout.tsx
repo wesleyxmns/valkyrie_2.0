@@ -1,13 +1,9 @@
+import ApplicationProviders from '@/providers/application/application-providers'
+import TanstackProvider from '@/providers/tanstack-query/tanstack-provider'
 import type { Metadata } from 'next'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Inter } from 'next/font/google'
-import { Toaster } from 'sonner'
 import { twMerge } from 'tailwind-merge'
 import '../app/styles/globals.css'
-import { AuthProvider } from '@/providers/auth/auth-provider'
-import ThemeProvider from '@/providers/theme/theme-provider'
-import { TooltipProvider } from '@/components/ui/tooltip'
-import TanstackProvider from '@/providers/tanstack-query/tanstack-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -30,16 +26,11 @@ export default function RootLayout({
             inter.className,
           )}
         >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <AuthProvider>
-              <TooltipProvider>
-                <main>
-                  {children}
-                </main>
-                <Toaster richColors />
-              </TooltipProvider>
-            </AuthProvider>
-          </ThemeProvider>
+          <ApplicationProviders>
+            <main>
+              {children}
+            </main>
+          </ApplicationProviders>
         </body>
       </html >
     </TanstackProvider>
