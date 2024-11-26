@@ -57,8 +57,8 @@ export class TaskAccessValidator {
       `(issuetype = ${IssueTypes.EPIC}) OR ` +
       `(issuetype in ("${IssueTypes.IMEDIATA}", "${IssueTypes.CORRETIVA}", "${IssueTypes.MELHORIA}") AND ` +
       `(` +
-      `(status in ("Backlog", "To Do", "Em Análise", "VALIDA", "INVALIDA", "APROVADA", "Aguardando Aprovação") AND status = "${JiraStatuses.UNDER_REVIEW}") OR ` +
-      `(status in ("In Progress", "Under Review") AND assignee = ${this.user.getName()})` +
+      `(status = "In Progress" AND assignee = ${this.user.getName()}) OR ` +
+      `(status = "Under Review" AND assignee != ${this.user.getName()})` +
       `)` +
       `)` +
       `) ` +
