@@ -14,6 +14,7 @@ import { BrynhildrService } from "@/services/external/brynhildr-service/brynhild
 import { CustomFields } from "@/shared/constants/jira/jira-custom-fields";
 import { IssueTypesId } from "@/shared/enums/jira-enums/issues-types-id";
 import { JiraStatusesId } from "@/shared/enums/jira-enums/jira-statuses-id";
+import { getStatusInfo } from "@/shared/functions/get-status-info";
 import { TransitionProps } from "@/shared/types/transitions";
 import { MoveRight } from "lucide-react";
 import Image from "next/image";
@@ -67,7 +68,7 @@ export function ActionsList({ isVisible, actions, epicFields }: ActionsListProps
                                       <ActionCard actions={actions} action={action} />
                                     </ActionTrigger>
                                     <ContextMenuContent>
-                                      <TransitionsCard actionKey={action.key} isLoadingTransitionsOptions isQualityMember={isQualityMember} />
+                                      <TransitionsCard actionKey={action.key} isQualityMember={isQualityMember} />
                                     </ContextMenuContent>
                                   </ContextMenu>
                                 )
@@ -133,6 +134,7 @@ function ActionCard({ actions, action }: ActionCardProps) {
   const userAuth = `Basic ${token}`;
 
   const { setActionsField, setEnabled } = useActions()
+  const { color: statusColor } = getStatusInfo(action.fields.status.name);
 
   const onHandleChangeContent = useCallback(async () => {
     const currentAction = actions.find((act) => act.key === action.key);
@@ -175,7 +177,10 @@ function ActionCard({ actions, action }: ActionCardProps) {
             />
             {action.fields?.priority.name}
           </Badge>
-          <Badge variant="outline" className="text-xs flex items-center gap-1">
+          <Badge
+            variant="outline"
+            className={`text-xs flex items-center gap-1 ${statusColor}`}
+          >
             {action.fields?.status.name}
           </Badge>
           {action.fields?.issuetype.id === IssueTypesId.CORRETIVA && (
@@ -211,11 +216,10 @@ function ActionCard({ actions, action }: ActionCardProps) {
 
 interface TransitionsCardProps {
   actionKey: string;
-  isLoadingTransitionsOptions: boolean;
   isQualityMember: boolean;
 }
 
-function TransitionsCard({ isLoadingTransitionsOptions, isQualityMember, actionKey }: TransitionsCardProps) {
+function TransitionsCard({ isQualityMember, actionKey }: TransitionsCardProps) {
   const { doTransition } = brynhildrService;
 
   const { '@valkyrie:auth-token': token } = parseCookies();
