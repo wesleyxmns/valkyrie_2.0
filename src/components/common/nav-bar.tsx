@@ -7,6 +7,7 @@ import { NavLink } from './nav-link'
 import { useTheme } from 'next-themes'
 import { ChooseTheme } from './choose-theme'
 import { Profile } from '../modules/auth/profile'
+import { NotificationList } from '../application/notification-list'
 
 export const Navbar = () => {
   const { theme, systemTheme } = useTheme()
@@ -37,6 +38,7 @@ export const Navbar = () => {
           </nav>
         </div>
         <div className="flex items-center space-x-1">
+          <NotificationList />
           <ChooseTheme />
           <Profile />
         </div>
