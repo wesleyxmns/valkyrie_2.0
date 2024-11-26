@@ -50,6 +50,22 @@ export class BrynhildrService {
     }
   }
 
+  getComments = async (issueKey: string, userAuthorization?: string) => {
+    try {
+      const res = await brynhildrAPI(`/comment/${issueKey}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': userAuthorization || ''
+        },
+      });
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   sendComment = async (issueKey: string, comment: string, userAuthorization: string) => {
     try {
       const res = await brynhildrAPI(`/comment/${issueKey}`, {
