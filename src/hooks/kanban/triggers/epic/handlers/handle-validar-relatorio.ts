@@ -24,7 +24,8 @@ export async function handleValidarRelatorio(
     cb(res.status, HttpStatus.NO_CONTENT, async function () {
       const currentTask = await getIssue(epicKey, userAuthorization);
 
-      const { issues } = await getCauseAnalysis(currentTask.fields[CustomFields.EPIC_NAME.id])
+      const data = await getCauseAnalysis({ epicName: currentTask.fields[CustomFields.EPIC_NAME.id] })
+      const { issues } = data
 
       if (issues.length > 0) {
         for await (const issue of issues) {

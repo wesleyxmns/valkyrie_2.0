@@ -34,7 +34,7 @@ export async function handleCancelarRelatorio(
         const epic = await getIssue(epicKey, userAuthorization);
 
         // TRANSICIONA AS ANÁLISES DE CAUSAS CANCELADAS.
-        const causesAnalysis = await getCauseAnalysis(epic.fields[CustomFields.EPIC_NAME.id])
+        const causesAnalysis = await getCauseAnalysis({ epicName: epic.fields[CustomFields.EPIC_NAME.id] })
         if (causesAnalysis.length > 0) {
           for await (const issue of causesAnalysis) {
             const transitions = await getTransitions(causesAnalysis.key, userAuthorization);
