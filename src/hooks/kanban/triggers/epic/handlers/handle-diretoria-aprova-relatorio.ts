@@ -80,7 +80,7 @@ export async function handleDiretoriaAprovaRelatorio(
         }
 
         // TRANSICIONA AS ANÁLISES DE CAUSAS PARA FINALIZADAS.
-        const causesAnalysis = await getCauseAnalysis(epic.fields[CustomFields.EPIC_NAME.id]);
+        const causesAnalysis = await getCauseAnalysis({ epicName: epic.fields[CustomFields.EPIC_NAME.id] });
         if (causesAnalysis.length > 0) {
           for await (const issue of causesAnalysis) {
             const transitions = await getTransitions(issue.key, userAuthorization);
@@ -91,7 +91,7 @@ export async function handleDiretoriaAprovaRelatorio(
           }
         }
 
-        // TRANSICIONA AS TAREFAS DE BACKLOG PARA EM IN PROGRES.
+        // TRANSICIONA AS TAREFAS DE BACKLOG PARA EM IN PROGRESS.
         const backlogActions = epic.fields.subtasks.filter((sub: Record<string, any>) => sub.fields.status.id === JiraStatusesId.BACKLOG);
         if (backlogActions.length > 0) {
           for await (const action of backlogActions) {

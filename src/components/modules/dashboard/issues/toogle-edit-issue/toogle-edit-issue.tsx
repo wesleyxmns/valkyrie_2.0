@@ -54,7 +54,7 @@ const _ToggleEditIssue = ({ children, issueKey, projectKey }: ToggleEditIssuePro
   const toggleEdit = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsEditable(true);
+    setIsEditable(prev => !prev);
   }, []);
 
   const editableFieldComponents = useMemo(() => {

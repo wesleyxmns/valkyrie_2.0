@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ContextMenu, ContextMenuContent, ContextMenuGroup, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 import { Separator } from "@/components/ui/separator";
 import { useTaskCard } from "@/hooks/kanban/use-task-card";
-import { HttpStatus } from "@/lib/fetch/constants/http-status";
 import { IssueTypesId } from "@/shared/enums/jira-enums/issues-types-id";
 import { JiraStatusesId } from "@/shared/enums/jira-enums/jira-statuses-id";
 import { Eye } from "lucide-react";
@@ -34,7 +33,7 @@ export function TaskCard({ tasks, index, columnid }) {
     IssueTypesId.IMEDIATA,
     IssueTypesId.CORRETIVA,
     IssueTypesId.MELHORIA
-  ].includes(tasks.fields?.issuetype?.id), [tasks[index].fields?.issuetype?.id]);
+  ].includes(tasks[index].fields?.issuetype?.id), [tasks[index].fields?.issuetype?.id]);
 
   const cardHeaderClass = useMemo(() => {
     const baseClass = 'px-3 py-1 space-between flex flex-row relative rounded-t-lg';
@@ -59,7 +58,7 @@ export function TaskCard({ tasks, index, columnid }) {
           >
             <CardHeader className={cardHeaderClass}>
               <div className="flex items-center justify-between w-full">
-                {isActionTask && tasks.fields?.status?.id === JiraStatusesId.IN_PROGRESS && (
+                {isActionTask && tasks[index].fields?.status?.id === JiraStatusesId.IN_PROGRESS && (
                   <TimerButton issueKey={tasks[index].key} initialTime={initialTime} />
                 )}
                 <Badge

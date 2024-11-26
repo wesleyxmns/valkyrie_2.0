@@ -14,33 +14,8 @@ import CAUSEANALYSISICON from '../../../../../../public/svg/cause-analysis-icon.
 import { BrynhildrService } from "@/services/external/brynhildr-service/brynhildr-service";
 import { useActions } from "@/hooks/actions/use-actions";
 import { parseCookies } from "nookies";
-
-const getStatusInfo = (status: string) => {
-  switch (status) {
-    case 'In Progress':
-    case 'Under Review':
-      return { color: 'bg-blue-100 text-blue-800', icon: AlertCircle };
-    case 'Done':
-      return { color: 'bg-green-100 text-green-800', icon: CheckCircle };
-    default:
-      return { color: 'bg-gray-100 text-gray-800', icon: Clock };
-  }
-};
-
-const getPriorityColor = (priority: string) => {
-  switch (priority) {
-    case 'Low':
-    case 'Lowest':
-      return 'bg-blue-100 text-blue-800';
-    case 'Medium':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'High':
-    case 'Highest':
-      return 'bg-red-100 text-red-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-};
+import { getStatusInfo } from "@/shared/functions/get-status-info";
+import { getPriorityColor } from "@/shared/functions/get-priority-color";
 
 const brynhildrService = new BrynhildrService();
 
@@ -53,14 +28,14 @@ export const CauseAnalysisSectors: React.FC<{ epicLink }> = ({ epicLink }) => {
 
   const { getIssue } = brynhildrService;
 
-  const { actionsField, setActionsField, setEnabled } = useActions();
+  const { setActionsField, setEnabled } = useActions();
   const { useGetCauseAnalysis } = useBrynhildrData();
   const { data: causeAnalysis } = useGetCauseAnalysis(epicLink);
 
   async function handleGetActionKeyClick(taskKey: string) {
     setCurrentTaskKey(taskKey);
     if (currentTaskKey === taskKey) {
-      const issue = await getIssue(currentTaskKey, userAuth);
+      const issue = await getIssue(taskKey, userAuth);
       setActionsField(issue);
       setEnabled((prevState) => !prevState);
     }
@@ -122,18 +97,23 @@ export const CauseAnalysisSectors: React.FC<{ epicLink }> = ({ epicLink }) => {
                   <ul className="divide-y">
                     {causeAnalysis?.issues?.map((task: Record<string, any>) => {
                       return (
-                        <Fragment>
+                        <Fragment key={task.id}>
                           {task.fields.issuelinks.map((issue: Record<string, any>, idx: number) => {
                             const { color: actionStatusColor } = getStatusInfo(issue.inwardIssue.fields.status.name);
                             return (
                               <li key={issue.id} className="flex items-center justify-between p-4">
                                 <div
-                                  onClick={() => {
+                                  onClick={(e) => {
+                                    e.stopPropagation();
                                     handleGetActionKeyClick(issue.inwardIssue.key);
                                   }}
-                                  className="flex items-center space-x-4 cursor-pointer"
-                                >
+                                  className="flex items-center space-x-4 cursor-pointer">
                                   <Image src={CORRECTIVEACTIONICON} alt="corrective-action-icon" />
+                                  <div className="flex flex-col">
+                                    <Badge className="font-medium text-xs text-center hover:bg-gray-200 w-fit" variant="outline">
+                                      {issue.inwardIssue.key}
+                                    </Badge>
+                                  </div>
                                   <Badge className='bg-CorrectiveAction text-white dark:' variant="outline">
                                     {issue.inwardIssue.fields.issuetype.name}
                                   </Badge>

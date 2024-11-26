@@ -1,4 +1,5 @@
 'use client'
+import { Comments } from "@/components/application/comments";
 import { ActionsCreateForm } from "@/components/modules/dashboard/issues/actions/actions-create-form";
 import { ActionsList } from "@/components/modules/dashboard/issues/actions/actions-list";
 import { ActionsTable } from "@/components/modules/dashboard/issues/actions/actions-table";
@@ -31,9 +32,9 @@ import { SelectTypes } from "../fields-components/select-types";
 import { SelectUsers } from "../fields-components/select-users";
 import { SelectSendMaterialToCustomer } from "../fields-components/send-material-to-customer";
 import { TextArea } from "../fields-components/text-area";
-import { Comments } from "@/components/application/comments";
 
 export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: UseComponentFiledProps) {
+
   const [textFieldsComponentsValues, setTextFieldsComponentsValues] = useState({
     summary: fields.summary || '',
     reporter: fields.reporter?.displayName || '',
@@ -109,7 +110,11 @@ export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: 
         id="SB_ Qtd. Item" label="SB_ Qtd. Item"
         name={CustomFields.QTD_ITEM.id}
         register={form.register}
-        defaultValue={textFieldsComponentsValues[CustomFields.QTD_ITEM.id]}
+        defaultValue={
+          textFieldsComponentsValues[CustomFields.QTD_ITEM.id] ?
+            textFieldsComponentsValues[CustomFields.QTD_ITEM.id] :
+            fields[CustomFields.QTD_ITEM.id]
+        }
         onBlur={(e) => {
           const value = e.target.value;
           setTimeout(() => {
@@ -128,7 +133,11 @@ export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: 
         id="Componente" label="Componente"
         name={CustomFields.COMPONENTE.id}
         register={form.register}
-        defaultValue={textFieldsComponentsValues[CustomFields.COMPONENTE.id]}
+        defaultValue={
+          textFieldsComponentsValues[CustomFields.COMPONENTE.id] ?
+            textFieldsComponentsValues[CustomFields.COMPONENTE.id] :
+            fields[CustomFields.COMPONENTE.id]
+        }
         onBlur={(e) => {
           const value = e.target.value;
           setTimeout(() => {
@@ -241,7 +250,15 @@ export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: 
 
     [CustomFields.IDENTIFICADO_EM.id]:
       <FloatingLabelInput id="Identificado em" label="Identificado em">
-        <SelectGlobal data={identifiedIn} name={`${CustomFields.IDENTIFICADO_EM.id}`} form={form} value={fields[CustomFields.IDENTIFICADO_EM.id]} />
+        <SelectGlobal
+          form={form}
+          data={identifiedIn}
+          name={`${CustomFields.IDENTIFICADO_EM.id}`}
+          value={textFieldsComponentsValues[CustomFields.IDENTIFICADO_EM.id] ?
+            textFieldsComponentsValues[CustomFields.IDENTIFICADO_EM.id] :
+            fields[CustomFields.IDENTIFICADO_EM.id]
+          }
+        />
       </FloatingLabelInput>,
 
     [CustomFields.ITEM_NORMA.id]:
@@ -331,9 +348,10 @@ export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: 
     "status":
       <SelectStatus
         showComponent={Object.values(fields).length > 0}
-        form={form} name='status'
+        form={form}
+        name='status'
         projectKey={projectKey}
-        value={textFieldsComponentsValues.status}
+        value={fields.status?.name}
       />,
 
     "types":

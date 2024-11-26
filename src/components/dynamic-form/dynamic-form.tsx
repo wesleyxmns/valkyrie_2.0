@@ -31,11 +31,11 @@ export const DynamicForm = ({ key, fieldsComponents }: DynamicFormProps) => {
   return (
     <ResizablePanelGroup
       direction="horizontal"
-      className="w-full h-full gap-6 rounded-lg"
+      className="gap-6 rounded-lg"
     >
-      <ResizablePanel defaultSize={35} className="h-full">
-        <ScrollArea className="min-h-[50rem] w-full p-3">
-          <div className="h-full space-y-2">
+      <ResizablePanel defaultSize={35} className="">
+        <ScrollArea className="">
+          <div className="space-y-2">
             {schemaComponents.filter((fieldKey: string) => !rightColumnComponents.includes(fieldKey))
               .map((fieldKey: string, idx: number) => (
                 <div key={idx}>
@@ -47,9 +47,9 @@ export const DynamicForm = ({ key, fieldsComponents }: DynamicFormProps) => {
         </ScrollArea>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={65} className="h-full">
-        <ScrollArea className="h-full w-full p-3">
-          <div className="min-h-[50rem] space-y-2">
+      <ResizablePanel defaultSize={65} className="">
+        <ScrollArea className="p-3">
+          <div className="space-y-2">
             {rightColumnComponents.map((fieldKey: string, idx: number) => (
               <div key={idx}>
                 {fieldsComponents[fieldKey]}

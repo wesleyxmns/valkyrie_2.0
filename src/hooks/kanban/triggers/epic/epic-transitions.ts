@@ -14,7 +14,8 @@ import { handleFinalizarTarefa } from './handlers/handle-finalizar-relatorio';
 import { handleInvalidarRelatorio } from "./handlers/handle-invalidar-relatorio";
 import { handleValidarRelatorio } from './handlers/handle-validar-relatorio';
 import { handleVoltarSetorEmitente } from "./handlers/handle-voltar-setor-emitente";
-import { handleReanalisarRelatorio } from "./handlers/handle-revisar-relatorio";
+import { handleRevisarRelatorio } from "./handlers/handle-revisar-relatorio";
+import { handleReanalisarRelatorio } from "./handlers/handle-reanalisar-relatorio";
 
 interface HandleTransitionProps {
       user: UserDTO;
@@ -56,6 +57,11 @@ export async function epicTransitions({ epicKey, transitionId, user, userAuthori
             }
 
             // AÇÃO DE REVISAR O RELATÓRIO
+            if (transitionId === RNCEpicTransitionsId.REVISAR) {
+                  await handleRevisarRelatorio(userAuthorization, epicKey, transitionId, itWorkedOut);
+            }
+
+            //AÇÃO DE REANALISAR O RELATÓRIO
             if (transitionId === RNCEpicTransitionsId.REANALISAR) {
                   await handleReanalisarRelatorio(userAuthorization, epicKey, transitionId, itWorkedOut);
             }

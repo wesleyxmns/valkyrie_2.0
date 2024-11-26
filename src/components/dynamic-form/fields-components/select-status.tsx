@@ -14,7 +14,7 @@ interface SelectTaskStatus extends SelectControllerProps {
   projectKey: string;
 }
 
-export function SelectStatus({ form, name, projectKey, value, disabled, showComponent = true }: SelectTaskStatus) {
+export function SelectStatus({ form, name, projectKey, value, showComponent = true }: SelectTaskStatus) {
   const { useGetListStatuses } = useBrynhildrData()
   const { data } = useGetListStatuses(projectKey);
 
