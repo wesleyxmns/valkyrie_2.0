@@ -25,7 +25,7 @@ import ImagePDF from '../../../public/assets/images/png/pdf.png';
 import ImageSTL from '../../../public/assets/images/png/stl.png';
 import ImageVideo from '../../../public/assets/images/png/video.png';
 import ImageZIP from '../../../public/assets/images/png/zip.png';
-import { Label } from "./label";
+import { Label } from "../ui/label";
 
 interface TextFormat {
   bold: boolean;

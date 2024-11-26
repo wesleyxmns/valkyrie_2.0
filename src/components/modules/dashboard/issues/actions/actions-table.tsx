@@ -9,15 +9,22 @@ import { Fragment } from "react";
 import CorrectiveAction from '../../../../../../public/assets/images/png/corretiveaction.png';
 import ImmediateAction from '../../../../../../public/svg/immediateaction.svg';
 import ImprovementAction from '../../../../../../public/svg/improvementaction.svg';
+import { Trash2 } from "lucide-react";
 
 export function ActionsTable() {
-  const { actions } = useActions();
+  const { actions, setActions } = useActions();
 
   const actionsIcons: Record<string, any> = {
     "10800": ImmediateAction,
     "10801": CorrectiveAction,
     "10802": ImprovementAction,
   }
+
+  const deleteAction = (index: number) => {
+    const newActions = [...actions];
+    newActions.splice(index, 1);
+    setActions(newActions);
+  };
 
   return (
     <Fragment>
@@ -74,6 +81,9 @@ export function ActionsTable() {
                             {action?.timetracking?.originalEstimate}
                           </TableCell>
                         }
+                        <TableCell onClick={() => deleteAction(idx)}>
+                          <Trash2 size={18} className="text-red-500 cursor-pointer" />
+                        </TableCell>
                       </TableRow>
                     )
                   })}

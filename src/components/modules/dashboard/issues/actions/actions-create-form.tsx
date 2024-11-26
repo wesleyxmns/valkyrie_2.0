@@ -57,10 +57,11 @@ export function ActionsCreateForm({ epicKey, projectKey }: ActionsCreateFormProp
 
   const onHandleSubmit = ((event: React.FormEvent<HTMLFormElement>) => {
     onHandleAddActions(event);
+    setIsOpen(false);
   });
 
   useMemo(() => {
-    if (form.getValues('reporter') === undefined && !isOpen) {
+    if (form && form.getValues('reporter') === undefined && !isOpen) {
       form.setValue('reporter', user && user?.getName());
     }
 
