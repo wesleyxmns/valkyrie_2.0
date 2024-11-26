@@ -10,7 +10,8 @@ import { MdOutlineArrowBack } from "react-icons/md";
 
 export function Profile() {
   const { user, signOut } = useAuth();
-  const avatarUrl = user?.getAvatarUrls()[`${48}x${48}`];
+
+  const avatarUrl = user && user.getAvatarUrls()[`${48}x${48}`];
   const proxyUrl = `${JIRA_PROXY_URL}${encodeURIComponent(avatarUrl ?? '')}`;
 
   return (
