@@ -89,7 +89,24 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
 
     const body = buildUpdateIssueFields(_data);
 
-    const { status } = await updateIssueFn({ issueKey: actionsField.key, fields: body, userAuthorization });
+    const filteredBody = Object.fromEntries(
+      Object.entries(body).filter(([key, value]) => {
+        if (value === undefined || value === '' ||
+          (typeof value === 'object' && value !== null && Object.keys(value).length === 0) ||
+          (Array.isArray(value) && value.length === 0)) {
+          return false;
+        }
+        if (typeof value === 'object' && value !== null) {
+          const nestedFiltered = Object.fromEntries(
+            Object.entries(value).filter(([nestedKey, nestedValue]) => nestedValue !== undefined && nestedValue !== '')
+          );
+          return Object.keys(nestedFiltered).length > 0;
+        }
+        return true;
+      })
+    );
+
+    const { status } = await updateIssueFn({ issueKey: actionsField.key, fields: filteredBody, userAuthorization });
 
     if (status === HttpStatus.NO_CONTENT && data.attachments?.length > 0) {
       await sendAttachments({ issueKey: actionsField.key, files: data.attachments });
