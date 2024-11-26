@@ -1,12 +1,12 @@
 'use client';
-import React, { useMemo } from 'react';
-import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import { Column } from "./column";
-import { ColumnKanbanProps } from '@/shared/types/kanban';
-import { UserDTO } from '@/dtos/responses/user-dto';
-import { TaskAccessValidator } from '@/lib/validators/task-acess-validator';
-import { extractStatusesFromJQL } from '@/lib/utils/utils';
 import HorizontalScrollWrapper from '@/components/ui/horizontal-scroll-wrapper';
+import { UserDTO } from '@/dtos/responses/user-dto';
+import { isUserInGroup } from '@/lib/utils/utils';
+import { jiraGroups } from '@/shared/constants/jira/jira-groups';
+import { ColumnKanbanProps } from '@/shared/types/kanban';
+import { DragDropContext, Droppable } from "@hello-pangea/dnd";
+import { useMemo } from 'react';
+import { Column } from "./column";
 
 interface KanbanProps {
   structure: ColumnKanbanProps[];
@@ -14,22 +14,36 @@ interface KanbanProps {
 }
 
 export function Kanban({ structure, user }: KanbanProps) {
-  const taskAccessValidator = useMemo(() => new TaskAccessValidator(user), [user]);
+
+  const quality = isUserInGroup(user, jiraGroups.quality) || isUserInGroup(user, jiraGroups.quality_manager);
+  const director = isUserInGroup(user, jiraGroups.directorship);
+  const managerGroup = user && user.getGroups().items?.find(group => group.name.includes('Manager'));
 
   const filteredStructure = useMemo(() => {
-    const jql = taskAccessValidator.getTaskJQL();
-    const allowedStatuses = extractStatusesFromJQL(jql);
+    if (quality) {
+      return structure;
+    }
+
+    if (director) {
+      return structure.filter(column => column.title === 'Aguardando Aprovação');
+    }
+
+    if (managerGroup) {
+      return structure.filter(column => {
+        return column.title === 'Em Análise' ||
+          column.title === 'VALIDA' ||
+          column.title === 'INVALIDA' ||
+          column.title === 'In Progress' ||
+          column.title === 'Aguardando Aprovação' ||
+          column.title === 'APROVADA' ||
+          column.title === 'Under Review'
+      });
+    }
 
     return structure.filter(column => {
-      const columnStatus = column.title.toUpperCase().trim();
-      const isAllowed = allowedStatuses.some(status =>
-        status.trim() === columnStatus ||
-        (status.includes(columnStatus) || columnStatus.includes(status))
-      );
-
-      return isAllowed;
+      return column.title === 'In Progress' || column.title === 'Under Review'
     });
-  }, [structure, taskAccessValidator]);
+  }, [structure, user]);
 
   if (filteredStructure.length === 0) {
     return (
