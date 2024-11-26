@@ -45,6 +45,7 @@ const epicBody = async (fields: Record<string, any>) => {
       [CustomFields.TIPO_FRETE.id]: fields[CustomFields.TIPO_FRETE.id],
       [CustomFields.ITEM_NORMA.id]: fields[CustomFields.ITEM_NORMA.id],
       [CustomFields.IDEALIZADORES.id]: fields[CustomFields.IDEALIZADORES.id],
+      [CustomFields.IDENTIFICADO_EM.id]: fields[CustomFields.IDENTIFICADO_EM.id]
     }
   }
 }
