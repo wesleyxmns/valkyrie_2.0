@@ -8,7 +8,6 @@ import { SelectUsers } from "@/components/dynamic-form/fields-components/select-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Comments } from "@/components/ui/coments";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { ShinyButton } from "@/components/ui/shiny-button";
@@ -33,6 +32,7 @@ import { Controller } from "react-hook-form";
 import { toast } from "sonner";
 import EpicIcon from '../../../../../../public/svg/epic.svg';
 import { EpicInformations } from "../components/epic-informations";
+import { Comments } from "@/components/application/comments";
 
 interface ActionContentFormProps {
   epicName?: string;

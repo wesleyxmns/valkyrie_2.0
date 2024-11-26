@@ -1,7 +1,7 @@
 'use client'
 import { ActionsCreateForm } from "@/components/modules/dashboard/issues/actions/actions-create-form";
+import { ActionsList } from "@/components/modules/dashboard/issues/actions/actions-list";
 import { ActionsTable } from "@/components/modules/dashboard/issues/actions/actions-table";
-import { Comments } from "@/components/ui/coments";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
 import { CustomFields } from "@/shared/constants/jira/jira-custom-fields";
 import { identifiedIn } from "@/shared/constants/rnc/identified-in";
@@ -31,7 +31,7 @@ import { SelectTypes } from "../fields-components/select-types";
 import { SelectUsers } from "../fields-components/select-users";
 import { SelectSendMaterialToCustomer } from "../fields-components/send-material-to-customer";
 import { TextArea } from "../fields-components/text-area";
-import { ActionsList } from "@/components/modules/dashboard/issues/actions/actions-list";
+import { Comments } from "@/components/application/comments";
 
 export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: UseComponentFiledProps) {
   const [textFieldsComponentsValues, setTextFieldsComponentsValues] = useState({
@@ -227,7 +227,7 @@ export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: 
         />
       </FloatingLabelInput>,
 
-    "comments": <Comments issueKey={epicKey} showComponent={Object.values(fields).length !== 0} />,
+    "comments": <Comments issueKey={epicKey as string} showComponent={Object.values(fields).length !== 0} />,
 
     [CustomFields.TIPO_RELATORIO.id]:
       <FloatingLabelInput id="Tipo de Relatório" label="Tipo de Relatório">

@@ -1,8 +1,8 @@
 'use client';
+import { Comments } from "@/components/application/comments";
 import AttachmentThumbnails from "@/components/dynamic-form/fields-components/attachments-content";
 import { Badge } from "@/components/ui/badge";
 import { CardTitle } from "@/components/ui/card";
-import { Comments } from "@/components/ui/coments";
 import { Textarea } from "@/components/ui/textarea";
 import { useBrynhildrData } from "@/hooks/brynhildr-data/brynhildr-data";
 import { parseCookies } from "nookies";
