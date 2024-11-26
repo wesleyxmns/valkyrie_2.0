@@ -1,4 +1,5 @@
 'use client'
+import { SelectClient } from "@/components/dynamic-form/fields-components/select-client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,13 +18,12 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { ShinyButton } from "@/components/ui/shiny-button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { avoidDefaultDomBehavior } from "@/shared/functions/avoidDefaultDomBehavior";
 import { Check, Plus, X } from "lucide-react";
 import React, { forwardRef, memo, useState } from "react";
 import { Controller, FormProvider } from "react-hook-form";
 import useCreateAutomatic from "./hooks/use-create-automatic";
 import useCreateManual from "./hooks/use-create-manual";
-import { avoidDefaultDomBehavior } from "@/shared/functions/avoidDefaultDomBehavior";
-import { SelectClient } from "@/components/dynamic-form/fields-components/select-client";
 
 const _ToggleCreateIssue = (
   { children, projectKey }: { children: React.ReactNode; projectKey: string },
@@ -55,7 +55,7 @@ const _ToggleCreateIssue = (
         onPointerDownOutside={avoidDefaultDomBehavior}
         onInteractOutside={avoidDefaultDomBehavior}
         ref={ref}
-        className="w-auto min-w-[1500px] min-h-[600px]"
+        className="w-auto min-w-[1500px] min-h-[500px] "
       >
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <DialogHeader>
@@ -74,7 +74,7 @@ const _ToggleCreateIssue = (
           <TabsContent value="manual">
             <FormProvider {...form}>
               <form onSubmit={form.handleSubmit(onHandleSendFormValues)}>
-                <ScrollArea className="h-[750px]">
+                <ScrollArea className="h-[600px] overflow-x-auto">
                   {memoizedFieldsComponents}
                   <ScrollBar orientation="vertical" />
                 </ScrollArea>
