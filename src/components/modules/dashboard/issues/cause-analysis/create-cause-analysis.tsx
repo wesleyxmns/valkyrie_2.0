@@ -99,7 +99,7 @@ export function CreateCauseAnalysis({ issueKey, projectKey, fields = {} }: Creat
                   </ResizablePanelGroup>
                 </ResizablePanel>
 
-                <ResizableHandle />
+                <ResizableHandle withHandle />
 
                 <ResizablePanel defaultSize={50} minSize={30}>
                   <ScrollArea className="h-full p-4">
