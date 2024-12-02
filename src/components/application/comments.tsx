@@ -51,6 +51,7 @@ export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
 
   const { user } = useAuth();
   const { '@valkyrie:auth-token': token } = parseCookies();
+  const userAuthorization = `Basic ${token}`;
   const { comment, attachments, setComment, setAttachments } = useComments();
   const [localComment, setLocalComment] = useState(comment);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -62,7 +63,7 @@ export function Comments({ issueKey, showComponent }: CommentsDialogProps) {
 
   const handlesendComment = async () => {
     if (localComment.trim() !== '') {
-      sendComment(issueKey as string, localComment, token);
+      sendComment(issueKey as string, localComment, userAuthorization);
     }
   };
 
