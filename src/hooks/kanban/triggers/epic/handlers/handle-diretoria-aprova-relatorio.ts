@@ -49,16 +49,21 @@ export async function handleDiretoriaAprovaRelatorio(
 
         // CRIA TAREFA PARA DEFINIÇÃO DE PRAZO DE ENTREGA E REGISTRO DO PEDIDO EM GARANTIA CASOS OS CAMPOS ESTEJAM DEFINIDOS COMO SIM.
         if (epic.fields[CustomFields.ENVIA_MATERIAL_CLIENTE.id]?.id === EnviarMaterialAoCliente.SIM) {
+
+          const deliveryDeadlineTask = epic.fields.subtasks.find((sub: Record<string, any>) => sub.fields.summary === "DEFINIR PRAZO DE ENTREGA");
+          if (deliveryDeadlineTask) {
+            return;
+          }
+
           const sendMaterialBody = await sendMaterialToCustomerBody(epicKey);
           const issueCreated = await createIssue({
             userAuthorization,
             fields: sendMaterialBody
           })
 
-          if (res.status === HttpStatus.CREATED) {
+          if (issueCreated) {
             const responseTransition = await getTransitions(issueCreated.key, userAuthorization)
-            const { transitions } = await responseTransition.json();
-            const toInProgress = transitions.find((transition: TransitionProps) => transition.to.id === JiraStatusesId.IN_PROGRESS);
+            const toInProgress = responseTransition.find((transition: TransitionProps) => transition.to.id === JiraStatusesId.IN_PROGRESS);
             if (toInProgress) {
               await doTransition(issueCreated.key, toInProgress.id, userAuthorization);
             }
@@ -66,13 +71,17 @@ export async function handleDiretoriaAprovaRelatorio(
         }
 
         if (epic.fields[CustomFields.REG_PED_GARANTIA.id]?.id === RegistrarPedidoEmGarantia.SIM) {
+
+          const deliveryDeadlineTask = epic.fields.subtasks.find((sub: Record<string, any>) => sub.fields.summary === "REGISTRAR PEDIDO EM GARANTIA");
+          if (deliveryDeadlineTask) {
+            return;
+          }
+
           const registrarPedidoEmGarantiaBody = await registrarPedidoEmGarantia(epicKey);
-          const res = await createIssue({ userAuthorization, fields: registrarPedidoEmGarantiaBody });
-          const issueCreated = await res.json();
-          if (res.status === HttpStatus.CREATED) {
+          const issueCreated = await createIssue({ userAuthorization, fields: registrarPedidoEmGarantiaBody });
+          if (issueCreated) {
             const responseTransition = await getTransitions(issueCreated.key, userAuthorization)
-            const { transitions } = await responseTransition.json();
-            const toInProgress = transitions.find((transition: TransitionProps) => transition.to.id === JiraStatusesId.IN_PROGRESS);
+            const toInProgress = responseTransition.find((transition: TransitionProps) => transition.to.id === JiraStatusesId.IN_PROGRESS);
             if (toInProgress) {
               await doTransition(issueCreated.key, toInProgress.id, userAuthorization);
             }
