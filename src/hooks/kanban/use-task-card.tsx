@@ -57,6 +57,7 @@ export function useTaskCard({ tasks, index, columnid }) {
     if (!foundTask || !columnId) return;
 
     const isSubtask = foundTask.fields?.issuetype?.subtask === true;
+
     const transitionHandler = isSubtask ? actionsTransitions : epicTransitions;
 
     try {
@@ -85,7 +86,6 @@ export function useTaskCard({ tasks, index, columnid }) {
 
       toast.success("Transição realizada com sucesso");
     } catch (error) {
-      console.error('Erro na transição:', error);
       if (error instanceof Error) {
         toast.error(error.message || "Erro ao realizar transição");
       } else {
@@ -112,7 +112,11 @@ export function useTaskCard({ tasks, index, columnid }) {
     const warnings = validateTransition(transition);
     if (warnings.length > 0) {
       warnings.forEach(warning => toast.warning(warning, { position: 'top-center' }));
-    } else if (transition.id === RNCEpicTransitionsId.INVALIDAR_RELATORIO || transition.name.toLowerCase() === 'invalidar relatório') {
+    } else if (
+      !foundTask?.fields?.issuetype?.subtask &&
+      (transition.id === RNCEpicTransitionsId.INVALIDAR_RELATORIO ||
+        transition.name.toLowerCase() === 'invalidar relatório')
+    ) {
       setCurrentTransition(transition);
       setExplainInvalidationModal(true);
     } else {
@@ -129,6 +133,7 @@ export function useTaskCard({ tasks, index, columnid }) {
           ''}`
       }
       onClick={() => handleTransitionClick(transition)}
+      disabled={transition.id === RNCEpicTransitionsId.APROVAR_RELATORIO_EM_PRIMEIRA_INSTANCIA}
     >
       {transition.name}
       <MoveRight className="w-3 h-3" />
