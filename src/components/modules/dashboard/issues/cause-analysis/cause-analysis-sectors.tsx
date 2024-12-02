@@ -3,19 +3,19 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { FloatingLabelInput } from "@/components/ui/floating-label-input";
+import { useActions } from "@/hooks/actions/use-actions";
 import { useBrynhildrData } from '@/hooks/brynhildr-data/brynhildr-data';
+import { BrynhildrService } from "@/services/external/brynhildr-service/brynhildr-service";
 import { CustomFields } from '@/shared/constants/jira/jira-custom-fields';
 import { extractEnumeratedRootCauses } from '@/shared/functions/extract-root-cause';
-import { AlertCircle, CheckCircle, ChevronDown, Clock } from 'lucide-react';
+import { getPriorityColor } from "@/shared/functions/get-priority-color";
+import { getStatusInfo } from "@/shared/functions/get-status-info";
+import { ChevronDown } from 'lucide-react';
 import Image from 'next/image';
+import { parseCookies } from "nookies";
 import React, { Fragment } from 'react';
 import CORRECTIVEACTIONICON from '../../../../../../public/assets/images/png/corretiveaction.png';
 import CAUSEANALYSISICON from '../../../../../../public/svg/cause-analysis-icon.svg';
-import { BrynhildrService } from "@/services/external/brynhildr-service/brynhildr-service";
-import { useActions } from "@/hooks/actions/use-actions";
-import { parseCookies } from "nookies";
-import { getStatusInfo } from "@/shared/functions/get-status-info";
-import { getPriorityColor } from "@/shared/functions/get-priority-color";
 
 const brynhildrService = new BrynhildrService();
 
