@@ -9,19 +9,19 @@ import { CommentsProvider } from "../dashboard/providers/comments/comments-provi
 
 export default function ApplicationProviders({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <AuthProvider>
-        <BrynhildrProvider>
-          <TooltipProvider>
-            <NotificationProvider>
-              <CommentsProvider>
-                {children}
-              </CommentsProvider>
-              <Toaster richColors />
-            </NotificationProvider>
-          </TooltipProvider>
-        </BrynhildrProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    // <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <AuthProvider>
+      <BrynhildrProvider>
+        <TooltipProvider>
+          <NotificationProvider>
+            <CommentsProvider>
+              {children}
+            </CommentsProvider>
+            <Toaster richColors />
+          </NotificationProvider>
+        </TooltipProvider>
+      </BrynhildrProvider>
+    </AuthProvider>
+    // </ThemeProvider>
   );
 }

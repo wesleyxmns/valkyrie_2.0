@@ -15,8 +15,8 @@ export const Navbar = () => {
 
   const links = [
     { name: 'Dashboard', href: ROUTES_VARIABLES.DASHBOARD },
-    { name: 'Ficha Técnica', href: ROUTES_VARIABLES.DATASHEET },
-    { name: 'Estruturas', href: ROUTES_VARIABLES.STRUCTURES }
+    // { name: 'Ficha Técnica', href: ROUTES_VARIABLES.DATASHEET },
+    // { name: 'Estruturas', href: ROUTES_VARIABLES.STRUCTURES }
   ]
 
   return (
@@ -39,7 +39,7 @@ export const Navbar = () => {
         </div>
         <div className="flex items-center space-x-1">
           <NotificationList />
-          <ChooseTheme />
+          {/* <ChooseTheme /> */}
           <Profile />
         </div>
       </div>
