@@ -58,7 +58,7 @@ export class TaskAccessValidator {
       `(issuetype in ("${IssueTypes.IMEDIATA}", "${IssueTypes.CORRETIVA}", "${IssueTypes.MELHORIA}") AND ` +
       `(` +
       `(status = "In Progress" AND assignee = ${this.user.getName()}) OR ` +
-      `(status = "Under Review" AND assignee != ${this.user.getName()})` +
+      `(status = "Under Review" AND assignee = ${this.user.getName()})` +
       `)` +
       `)` +
       `) ` +
