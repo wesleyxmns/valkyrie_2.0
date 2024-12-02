@@ -32,8 +32,6 @@ export async function handleDevolverParaAprovada(
           return;
         }
 
-        console.log('Subtasks:', data.fields.subtasks);
-        
         for await (const subtask of data.fields.subtasks) {
           const transitions = await getTransitions(subtask.key, userAuthorization);
           const toInProgressTransition = transitions.find((transition: TransitionProps) => transition.to.id === JiraStatusesId.IN_PROGRESS);
