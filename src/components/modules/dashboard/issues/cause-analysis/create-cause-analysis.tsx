@@ -11,6 +11,7 @@ import { CombinedCauses } from "./combined-causes";
 import { useCauseAnalysis } from "./useCauseAnalysis";
 import { avoidDefaultDomBehavior } from "@/shared/functions/avoidDefaultDomBehavior";
 import { ActionPanel } from "./cause-subtasks-panel";
+import { Fragment } from "react";
 
 interface CreateCauseAnalysis {
   fields: Record<string, any>;
@@ -23,6 +24,7 @@ export function CreateCauseAnalysis({ issueKey, projectKey, fields = {} }: Creat
     openDialog,
     handleOpenChange,
     form,
+    isLoading,
     onHandleCreateCauseAnalysis,
     whys,
     causeAnalysis,
@@ -42,7 +44,7 @@ export function CreateCauseAnalysis({ issueKey, projectKey, fields = {} }: Creat
           <SquarePlus size={18} className="cursor-pointer" />
         </DialogTrigger>
 
-        <DialogContent className="p-6 h-[800px]" onPointerDownOutside={avoidDefaultDomBehavior} onInteractOutside={avoidDefaultDomBehavior}>
+        <DialogContent className="p-6 h-[800px] max-w-[1800px]" onPointerDownOutside={avoidDefaultDomBehavior} onInteractOutside={avoidDefaultDomBehavior}>
 
           <div className="w-full h-full flex flex-col space-y-4" >
             <DialogHeader>
@@ -62,7 +64,7 @@ export function CreateCauseAnalysis({ issueKey, projectKey, fields = {} }: Creat
                 form.handleSubmit(onHandleCreateCauseAnalysis)()
               }}>
               <ResizablePanelGroup className="flex-grow rounded-lg border" direction="horizontal">
-                <ResizablePanel defaultSize={50} minSize={30}>
+                <ResizablePanel defaultSize={30} minSize={30}>
                   <ResizablePanelGroup direction="vertical">
                     <ResizablePanel defaultSize={50} minSize={30}>
                       <ScrollArea className="h-full p-3">
@@ -80,8 +82,8 @@ export function CreateCauseAnalysis({ issueKey, projectKey, fields = {} }: Creat
                       </ScrollArea>
                     </ResizablePanel>
                     {causeAnalysis.whys?.length > 0 && (
-                      <>
-                        <ResizableHandle />
+                      <Fragment>
+                        <ResizableHandle withHandle />
                         <ResizablePanel defaultSize={50} minSize={30}>
                           <ScrollArea className="h-full p-3">
                             <CombinedCauses
@@ -94,7 +96,7 @@ export function CreateCauseAnalysis({ issueKey, projectKey, fields = {} }: Creat
                             />
                           </ScrollArea>
                         </ResizablePanel>
-                      </>
+                      </Fragment>
                     )}
                   </ResizablePanelGroup>
                 </ResizablePanel>
@@ -123,10 +125,11 @@ export function CreateCauseAnalysis({ issueKey, projectKey, fields = {} }: Creat
 
               <DialogFooter className="mt-4">
                 <Button
-                  className="cursor-pointer" disabled={missingCorrectiveActions.length > 0}
+                  className="cursor-pointer"
+                  disabled={isLoading || !form.formState.isValid}
                   type="submit"
                 >
-                  Vincular
+                  {isLoading ? 'Vinculando...' : 'Vincular'}
                 </Button>
               </DialogFooter>
             </form>

@@ -88,7 +88,7 @@ export function ActionPanel({ form,
       reporter: '',
       assignee: '',
       description: '',
-      originalEstimate: '',
+      timetracking: {},
     });
 
     setAnalysisSelectKey(prev => prev + 1);
@@ -220,9 +220,8 @@ export function ActionPanel({ form,
           <Textarea disabled={disabled} {...field} />
         )} />
       </FloatingLabelInput>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 justify-end">
         <Button
-          disabled={disabled || !missingCorrectiveActions.length}
           type="button"
           onClick={addCorrectiveAction}
         >
