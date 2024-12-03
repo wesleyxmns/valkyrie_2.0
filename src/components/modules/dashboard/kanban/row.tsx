@@ -3,7 +3,6 @@ import { memo } from "react";
 import { Item } from "./item";
 import { Draggable, DraggableProvided, DraggableStateSnapshot } from "@hello-pangea/dnd";
 import { TaskCard } from "./task-card";
-// import { TaskCard } from "./task-card";
 
 export const Row = memo(function Row(props: Record<string, any>) {
   const { data: { tasks }, index, style } = props;

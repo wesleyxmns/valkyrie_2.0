@@ -80,7 +80,7 @@ export function TaskCard({ tasks, index, columnid }) {
                 issueKey={tasks[index].key}
                 projectKey={tasks[index].fields?.project?.key}
               >
-                <span className="hover:bg-primary relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50  justify-between">
+                <span className="hover:bg-gray-200 relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50  justify-between">
                   Ver
                   <Eye className="w-3 h-3" />
                 </span>
