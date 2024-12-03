@@ -27,7 +27,7 @@ import { useMutation } from "@tanstack/react-query";
 import { FilePenIcon } from "lucide-react";
 import Image from "next/image";
 import { parseCookies } from "nookies";
-import { Fragment, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 import { Controller } from "react-hook-form";
 import { toast } from "sonner";
 import EpicIcon from '../../../../../../public/svg/epic.svg';
@@ -71,7 +71,7 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
     }
   })
 
-  async function onHandleSendValues(data: Record<string, any>) {
+  const onHandleSendValues = useCallback(async (data: Record<string, any>) => {
     const _data = Object.fromEntries(
       Object.entries(data).filter(
         ([key, value]) => {
@@ -87,7 +87,7 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
 
     delete _data.attachments;
 
-    const body = buildUpdateIssueFields(_data);
+    const body = buildUpdateIssueFields({ data: _data });
 
     const filteredBody = Object.fromEntries(
       Object.entries(body).filter(([key, value]) => {
@@ -111,7 +111,7 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
     if (status === HttpStatus.NO_CONTENT && data.attachments?.length > 0) {
       await sendAttachments({ issueKey: actionsField.key, files: data.attachments });
     }
-  }
+  }, [actionsField, updateIssueFn, userAuthorization, sendAttachments]);
 
   return (
     <form onSubmit={handleSubmit(onHandleSendValues)}>
@@ -170,8 +170,24 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
           />
         </FloatingLabelInput>
         <div className="flex space-x-2 items-center" >
-          <SelectUsers disabled showComponent id="Solicitante" label="Solicitante" form={form} name="reporter" value={actionsField?.fields?.reporter?.displayName} />
-          <SelectUsers disabled={!isEditing} showComponent id="Responsável" label="Responsável" form={form} name="assignee" value={actionsField?.fields?.assignee?.displayName} />
+          <SelectUsers
+            disabled
+            showComponent
+            id="Solicitante"
+            label="Solicitante"
+            form={form}
+            name="reporter"
+            value={actionsField?.fields?.reporter?.displayName}
+          />
+          <SelectUsers
+            disabled={!isEditing}
+            showComponent
+            id="Responsável"
+            label="Responsável"
+            form={form}
+            name="assignee"
+            value={actionsField?.fields?.assignee?.displayName}
+          />
           <FloatingLabelInput label="Data de entrega" id="Data de entrega" >
             <div className="flex items-center gap-2" >
               <Controller name='duedate' control={form.control} render={({ field }) => {
@@ -228,7 +244,7 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
         <div className="flex items-center space-x-2" >
           <FloatingLabelInput id="Descrição" label="Descrição">
             <Controller
-              defaultValue={actionsField?.fields?.description}
+              defaultValue={actionsField?.fields?.description !== null ? actionsField?.fields?.description : ''}
               name="description"
               control={control}
               render={({ field }) => (
@@ -236,7 +252,7 @@ export function ActionContentForm({ epicName }: ActionContentFormProps) {
                   className="resize-none"
                   disabled={!isEditing}
                   rows={8}
-                  value={field.value}
+                  value={actionsField?.fields?.description}
                   onChange={(e) => {
                     field.onChange(e);
                     const matches = e.target.value.match(regexPattern);

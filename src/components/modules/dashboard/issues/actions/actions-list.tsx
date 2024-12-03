@@ -135,10 +135,9 @@ function ActionCard({ actions, action }: ActionCardProps) {
 
   const { setActionsField, setEnabled } = useActions()
   const { color: statusColor } = getStatusInfo(action.fields.status.name);
+  const currentAction = actions.find((act) => act.key === action.key);
 
   const onHandleChangeContent = useCallback(async () => {
-    const currentAction = actions.find((act) => act.key === action.key);
-
     if (currentAction) {
       actionKey = currentAction.key;
       if (actionKey) {
@@ -147,7 +146,7 @@ function ActionCard({ actions, action }: ActionCardProps) {
       }
     }
     setEnabled((prevState) => !prevState);
-  }, [actionKey]);
+  }, [actionKey, currentAction]);
 
   return (
     <Card>
