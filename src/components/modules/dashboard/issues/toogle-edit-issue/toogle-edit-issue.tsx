@@ -47,7 +47,7 @@ const _ToggleEditIssue = ({ children, issueKey, projectKey }: ToggleEditIssuePro
   const { useGetIssue } = useBrynhildrData()
   const { data: epicIssue } = useGetIssue(issueKey, userAuth)
 
-  const { actions, enabled, setEnabled, setActions, setActionsField } = useActions()
+  const { actions, followUp, effectivenessAnalysis, enabled, setEnabled, setActions, setActionsField } = useActions()
 
   const { form, fieldsComponents, setTextFieldsComponentsValues } = useBuildForm({
     projectKey,
@@ -127,7 +127,7 @@ const _ToggleEditIssue = ({ children, issueKey, projectKey }: ToggleEditIssuePro
   })
 
   const onHandleEditEpicFields: SubmitHandler<FieldValues> = useCallback(async (data) => {
-    const values = buildUpdateIssueFields(data);
+    const values = buildUpdateIssueFields({ data, followUp, effectivenessAnalysis });
     const allowedKeys = new Set(["issueTypeId", "reporter", "assignee", "priority"]);
     const body = Object.fromEntries(
       Object.entries(values).filter(
@@ -138,8 +138,9 @@ const _ToggleEditIssue = ({ children, issueKey, projectKey }: ToggleEditIssuePro
           !allowedKeys.has(key)
       )
     );
+
     await updateIssueFn({ issueKey, fields: body, userAuthorization: userAuth });
-  }, []);
+  }, [followUp, effectivenessAnalysis]);
 
   const handleSendRejectComment = async (comment: string) => {
     const res = await sendComment(issueKey, comment, userAuth);
