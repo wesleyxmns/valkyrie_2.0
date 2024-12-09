@@ -203,7 +203,11 @@ export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: 
         <TextArea
           register={form.register}
           name={CustomFields.ITEM_RNC.id}
-          defaultValue={textFieldsComponentsValues[CustomFields.ITEM_RNC.id]}
+          defaultValue={
+            textFieldsComponentsValues[CustomFields.ITEM_RNC.id] ?
+              textFieldsComponentsValues[CustomFields.ITEM_RNC.id] :
+              fields[CustomFields.ITEM_RNC.id]
+          }
           onBlur={(e) => {
             const value = e.target.value;
             setTimeout(() => {
@@ -222,7 +226,11 @@ export function useBuildDynamicForm({ epicKey, form, projectKey, fields = {} }: 
         <TextArea
           name="description"
           register={form.register}
-          defaultValue={textFieldsComponentsValues.description}
+          defaultValue={
+            textFieldsComponentsValues.description ?
+              textFieldsComponentsValues.description :
+              fields.description
+          }
           onBlur={(e) => {
             const value = e.target.value;
             setTimeout(() => {
